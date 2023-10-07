@@ -2,13 +2,16 @@ package com.mtattab.c2cServer.service.impl;
 
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
+import com.mtattab.c2cServer.service.ActiveSessionsObserver;
 import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
+import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -16,22 +19,23 @@ import java.util.Set;
 @Service
 @Slf4j
 public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientHandlerService {
-    @Autowired
-    Set<WebSocketSession> activeSessions;
 
+    @Autowired
+    ActiveSessionsObservable activeSessionsObservable;
     @Autowired
     SessionLogRepository sessionLogRepository;
 
     public void addActiveSession(WebSocketSession session){
-        if (!activeSessions.contains(session)){
-            activeSessions.add(session);
+        if (!activeSessionsObservable.getActiveReverseShellSessions().contains(session)){
+            activeSessionsObservable.addReverseShellSession(session);
             logSessionInDb(session);
         }
     }
 
     public void removeActiveSession(WebSocketSession session){
+        activeSessionsObservable.removeReverseShellSession(session);
         logSessionOutInDb(session);
-        activeSessions.remove(session);
+
     }
 
     private void logSessionInDb(WebSocketSession session){
@@ -43,28 +47,32 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
                     .sessionCreatedAt(Timestamp.valueOf(LocalDateTime.now()))
                     .build());
         }catch (Exception e){
-            log.error("[-] exception occurred while saving session {}",e.getMessage());
+            log.error("[-] exception occurred while saving session: {}",e.getMessage());
             e.printStackTrace();
         }
     }
     private void logSessionOutInDb(WebSocketSession session){
-        System.out.println(session.getId());
         try {
             sessionLogRepository.updateSessionToClosed(Timestamp.valueOf(LocalDateTime.now()), session.getId());
         }catch (Exception e){
-            log.error("[-] exception occurred while removing session {}",e.getMessage());
+            log.error("[-] exception occurred while removing session: {}",e.getMessage());
             e.printStackTrace();
         }
     }
 
     public Set<WebSocketSession> listActiveConnections(){
-        System.out.println(activeSessions);
-        return activeSessions;
+        return activeSessionsObservable.getActiveReverseShellSessions();
     }
 
 
-    public void handleReverseShellClient(){
+    public void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException {
+        String clientMessage = message.getPayload();
 
+        // Handle the client's message (e.g., send a response back to the client)
+        String responseMessage = "Received your message: " + clientMessage;
+
+
+        session.sendMessage(new TextMessage(responseMessage));
 
     }
 
