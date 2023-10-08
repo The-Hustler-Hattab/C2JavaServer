@@ -1,5 +1,6 @@
 package com.mtattab.c2cServer.service.impl;
 
+import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.MessageEventModel;
 import com.mtattab.c2cServer.model.enums.ActiveSessionsEvents;
 import com.mtattab.c2cServer.model.enums.ManagerCommands;
@@ -61,7 +62,11 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
         if (handleManagerCommandMessage(session,message)){
 
         }else {
-            SocketUtil.sendMessage(session, new TextMessage("Command Not Found. Use 'help' for list of commands"));
+            SocketUtil.sendMessage(session, new TextMessage(
+                    DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                            .msg("Command Not Found. Use '"+ManagerCommands.HELP.getCommand()+"' for list of commands")
+                            .build()
+                    )));
         }
 
     }

@@ -10,9 +10,13 @@ import lombok.NoArgsConstructor;
 
 public enum ManagerCommands {
 
-    HELP("help", "show all commands", "help", "There is no required parameters"),
+    HELP("/?", "show all commands", "/?", "There is no required parameters"),
     LIST_ACTIVE_SESSIONS("sessions","List all active sessions", "sessions", "There is no required parameters"),
-    CONNECT_TO_ACTIVE_SESSION("connect","connect to session by using its id", "connect <session-id>", "requires the use of a session id");
+    CONNECT_TO_ACTIVE_SESSION("connect","connect to session by using its id", "connect <session-id>", "requires the use of a session id"),
+    TERMINATE_ACTIVE_SESSION("kill","terminate active session using its id", "kill <session-id>", "requires the use of a session id")
+
+    ;
+
 
 
 

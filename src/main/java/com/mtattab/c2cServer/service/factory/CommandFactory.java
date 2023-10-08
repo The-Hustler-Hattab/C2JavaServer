@@ -4,6 +4,8 @@ import com.mtattab.c2cServer.model.enums.ManagerCommands;
 import com.mtattab.c2cServer.model.exceptions.CommandNotFoundException;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.commands.HelpCommand;
+import com.mtattab.c2cServer.service.commands.SessionsCommand;
+import com.mtattab.c2cServer.service.commands.TerminateCommand;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +18,10 @@ import java.util.Optional;
 @Component
 public class CommandFactory {
 
-
+    @Autowired
+    SessionsCommand sessionsCommand;
+    @Autowired
+    TerminateCommand terminateCommand;
 
     public Command createCommand(String userInput) throws CommandNotFoundException {
         List<String> userInputAsList= DataManipulationUtil.stringToList(userInput, " ");
@@ -37,8 +42,12 @@ public class CommandFactory {
             case HELP -> {
                 return new HelpCommand();
             }
-//            case 2 -> System.out.println("Option 2 selected");
-//            case 3 -> System.out.println("Option 3 selected");
+            case LIST_ACTIVE_SESSIONS -> {
+                return sessionsCommand;
+            }
+            case TERMINATE_ACTIVE_SESSION -> {
+                return terminateCommand;
+            }
             default -> throw new CommandNotFoundException();
         }
     }
