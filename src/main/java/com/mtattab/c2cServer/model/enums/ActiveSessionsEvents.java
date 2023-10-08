@@ -1,33 +1,43 @@
 package com.mtattab.c2cServer.model.enums;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mtattab.c2cServer.model.SocketCommunicationDTOModel;
+import com.mtattab.c2cServer.service.ActiveSessionEventHandler;
+import com.mtattab.c2cServer.util.DataManipulationUtil;
+import com.mtattab.c2cServer.util.SocketUtil;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Set;
 @Slf4j
+@Getter
 public enum ActiveSessionsEvents {
-
     RECEIVED_NEW_CONNECTION("RECEIVED_NEW_CONNECTION", new ActiveSessionEventHandler() {
         @Override
         public void handle(WebSocketSession session, Set<WebSocketSession> sessions) {
-            log.info("[+] {} handled",RECEIVED_NEW_CONNECTION.getValue());
-//            sessions.add(session);
             sessions.forEach(activeSession-> {
-                sendMessage(activeSession,new TextMessage("New connection established "+activeSession));
+                SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(activeSession,RECEIVED_NEW_CONNECTION.getValue())));
             });
+            log.info("[+] {} handled",RECEIVED_NEW_CONNECTION.getValue());
+
         }
     }),
-    REMOVED_CONNECTION("REMOVED_CONNECTION", new ActiveSessionEventHandler() {
+    LOST_CONNECTION("LOST_CONNECTION", new ActiveSessionEventHandler() {
         @Override
         public void handle(WebSocketSession session, Set<WebSocketSession> sessions) {
-            log.info("[+] {} handled",REMOVED_CONNECTION.getValue());
             sessions.forEach(activeSession-> {
-                sendMessage(activeSession,new TextMessage("Connection closed "+activeSession));
+                SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(activeSession, LOST_CONNECTION.getValue())));
             });
-//            sessions.remove(session);
+            log.info("[+] {} handled", LOST_CONNECTION.getValue());
+
         }
     });
 
@@ -35,28 +45,23 @@ public enum ActiveSessionsEvents {
 
     private ActiveSessionEventHandler eventHandler;
 
+
     private ActiveSessionsEvents(String value ,ActiveSessionEventHandler eventHandler) {
         this.value = value;
         this.eventHandler = eventHandler;
     }
 
-    public String getValue() {
-        return value;
+
+    private static String constructJsonMessage(WebSocketSession session, String message){
+        return DataManipulationUtil.convertObjectToJson(SocketCommunicationDTOModel.builder()
+                    .socketId(session.getId())
+                    .socketAddress(Objects.requireNonNull(session.getRemoteAddress()).toString())
+                    .message(message)
+                    .build()
+            );
+
     }
-    public ActiveSessionEventHandler getEventHandler() {
-        return eventHandler;
-    }
 
-
-
-
-    private static void sendMessage(WebSocketSession session, WebSocketMessage message){
-        try {
-            session.sendMessage(message);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 
 }

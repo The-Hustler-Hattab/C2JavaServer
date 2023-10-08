@@ -21,14 +21,7 @@ public class ReverseShellManagerHandler extends TextWebSocketHandler {
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         reverseShellManagerObserverService.addMangerSession(session);
 
-
-        String clientMessage = message.getPayload();
-
-        // Handle the client's message (e.g., send a response back to the client)
-        String responseMessage = "Received your message: " + clientMessage;
-
-
-        session.sendMessage(new TextMessage(responseMessage));
+        reverseShellManagerObserverService.handleManagerSession(session, message);
     }
 
     @Override

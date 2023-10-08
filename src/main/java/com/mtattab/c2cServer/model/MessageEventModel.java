@@ -9,14 +9,14 @@ import org.springframework.web.socket.WebSocketSession;
 @Getter
 @Setter
 @ToString
-public class MessageEventModels extends ApplicationEvent {
+public class MessageEventModel extends ApplicationEvent {
     private ActiveSessionsEvents event;
     private WebSocketSession session;
-    public MessageEventModels(Object source, ActiveSessionsEvents event) {
+    public MessageEventModel(Object source, ActiveSessionsEvents event) {
         super(source);
         this.event = event;
     }
-    public MessageEventModels(Object source, ActiveSessionsEvents event, WebSocketSession session ) {
+    public MessageEventModel(Object source, ActiveSessionsEvents event, WebSocketSession session ) {
         super(source);
         this.event = event;
         this.session = session;

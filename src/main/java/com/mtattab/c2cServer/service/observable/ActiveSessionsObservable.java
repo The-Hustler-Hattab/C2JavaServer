@@ -1,8 +1,7 @@
 package com.mtattab.c2cServer.service.observable;
 
-import com.mtattab.c2cServer.model.MessageEventModels;
+import com.mtattab.c2cServer.model.MessageEventModel;
 import com.mtattab.c2cServer.model.enums.ActiveSessionsEvents;
-import com.mtattab.c2cServer.service.impl.ReverseShellManagerObserverServiceImpl;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     public void addReverseShellSession(WebSocketSession session){
         activeReverseShellSessions.add(session);
 
-        this.applicationEventPublisher.publishEvent(new MessageEventModels(this, ActiveSessionsEvents.RECEIVED_NEW_CONNECTION, session));
+        this.applicationEventPublisher.publishEvent(new MessageEventModel(this, ActiveSessionsEvents.RECEIVED_NEW_CONNECTION, session));
 
         log.info("[+] New Session established {}",session);
 
@@ -49,7 +48,7 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
 
     public void removeReverseShellSession(WebSocketSession session){
         activeReverseShellSessions.remove(session);
-        this.applicationEventPublisher.publishEvent(new MessageEventModels(this, ActiveSessionsEvents.REMOVED_CONNECTION, session));
+        this.applicationEventPublisher.publishEvent(new MessageEventModel(this, ActiveSessionsEvents.LOST_CONNECTION, session));
 
         log.info("[+] Session Closed {}",session);
 
