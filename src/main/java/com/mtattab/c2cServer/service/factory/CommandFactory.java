@@ -3,6 +3,7 @@ package com.mtattab.c2cServer.service.factory;
 import com.mtattab.c2cServer.model.enums.ManagerCommands;
 import com.mtattab.c2cServer.model.exceptions.CommandNotFoundException;
 import com.mtattab.c2cServer.service.Command;
+import com.mtattab.c2cServer.service.commands.ConnectCommand;
 import com.mtattab.c2cServer.service.commands.HelpCommand;
 import com.mtattab.c2cServer.service.commands.SessionsCommand;
 import com.mtattab.c2cServer.service.commands.TerminateCommand;
@@ -22,6 +23,9 @@ public class CommandFactory {
     SessionsCommand sessionsCommand;
     @Autowired
     TerminateCommand terminateCommand;
+
+    @Autowired
+    ConnectCommand connectCommand;
 
     public Command createCommand(String userInput) throws CommandNotFoundException {
         List<String> userInputAsList= DataManipulationUtil.stringToList(userInput, " ");
@@ -47,6 +51,9 @@ public class CommandFactory {
             }
             case TERMINATE_ACTIVE_SESSION -> {
                 return terminateCommand;
+            }
+            case CONNECT_TO_ACTIVE_SESSION -> {
+                return connectCommand;
             }
             default -> throw new CommandNotFoundException();
         }

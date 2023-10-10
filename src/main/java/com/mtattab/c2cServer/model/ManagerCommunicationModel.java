@@ -14,6 +14,9 @@ public class ManagerCommunicationModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<SocketCommunicationDTOModel> webSocketSessionSet;
 
+    private String masterSessionId;
+
+
     private String msg;
 
 

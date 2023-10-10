@@ -7,6 +7,7 @@ import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -60,9 +61,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
         }
     }
 
-    public Set<WebSocketSession> listActiveConnections(){
-        return activeSessionsObservable.getActiveReverseShellSessions();
-    }
+
 
 
     public void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException {

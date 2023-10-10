@@ -1,12 +1,10 @@
 package com.mtattab.c2cServer.service.commands;
 
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
-import com.mtattab.c2cServer.model.SocketCommunicationDTOModel;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,7 +14,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Component
 @Slf4j
@@ -25,9 +22,10 @@ public class TerminateCommand implements Command {
     ActiveSessionsObservable activeSessionsObservable;
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
-        Optional<WebSocketSession> targetSessionToBeKilled = activeSessionsObservable.getActiveReverseShellSessions().stream()
-                .filter(session -> args.get(1).equalsIgnoreCase(session.getId()))
-                .findFirst();
+        Optional<WebSocketSession> targetSessionToBeKilled = SocketUtil.findSessionByIdInSessionSet(
+                activeSessionsObservable.getActiveReverseShellSessions(),args.get(1));
+
+
         if (targetSessionToBeKilled.isPresent()){
             closeSession(targetSessionToBeKilled.get(), currentSocket);
 

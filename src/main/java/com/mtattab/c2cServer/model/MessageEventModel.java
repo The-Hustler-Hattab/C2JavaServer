@@ -5,6 +5,8 @@ import lombok.*;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.HashMap;
+
 
 @Getter
 @Setter
@@ -12,6 +14,9 @@ import org.springframework.web.socket.WebSocketSession;
 public class MessageEventModel extends ApplicationEvent {
     private ActiveSessionsEvents event;
     private WebSocketSession session;
+
+    private WebSocketSession targetConnectSession;
+
     public MessageEventModel(Object source, ActiveSessionsEvents event) {
         super(source);
         this.event = event;
@@ -20,5 +25,11 @@ public class MessageEventModel extends ApplicationEvent {
         super(source);
         this.event = event;
         this.session = session;
+    }
+    public MessageEventModel(Object source, ActiveSessionsEvents event, WebSocketSession currentSession, WebSocketSession targetConnectSession) {
+        super(source);
+        this.event = event;
+        this.session = currentSession;
+        this.targetConnectSession= targetConnectSession;
     }
 }

