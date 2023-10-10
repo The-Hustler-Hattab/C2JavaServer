@@ -46,4 +46,14 @@ public class DataManipulationUtil {
         }
     }
 
+    public static <T> T jsonToObject(String json, Class<T> valueType) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(json, valueType);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace(); // Handle the exception appropriately
+            return null;
+        }
+    }
+
 }

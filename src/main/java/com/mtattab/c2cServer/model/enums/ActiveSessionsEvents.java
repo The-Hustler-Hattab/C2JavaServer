@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 @Slf4j
@@ -18,7 +17,7 @@ import java.util.Set;
 public enum ActiveSessionsEvents {
     RECEIVED_NEW_CONNECTION("RECEIVED_NEW_CONNECTION", new ActiveSessionEventHandler() {
         @Override
-        public void handle(MessageEventModel reverseShellSession, Set<WebSocketSession> mangerSessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
+        public void handle(MessageEventModel reverseShellSession, Set<WebSocketSession> mangerSessions) {
             mangerSessions.forEach(activeSession-> {
                 SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(reverseShellSession.getSession(),RECEIVED_NEW_CONNECTION.getValue())));
             });
@@ -28,25 +27,26 @@ public enum ActiveSessionsEvents {
     }),
     LOST_CONNECTION("LOST_CONNECTION", new ActiveSessionEventHandler() {
         @Override
-        public void handle(MessageEventModel reverseShellSession, Set<WebSocketSession> mangerSessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
+        public void handle(MessageEventModel reverseShellSession, Set<WebSocketSession> mangerSessions) {
             mangerSessions.forEach(activeSession-> {
                 SocketUtil.sendMessage(activeSession,new TextMessage(constructJsonMessage(reverseShellSession.getSession(), LOST_CONNECTION.getValue())));
             });
             log.info("[+] {} handled", LOST_CONNECTION.getValue());
 
         }
-    }),
-    MANAGER_TO_REVERSE_SHELL_CONNECTION("MANAGER_TO_REVERSE_SHELL_CONNECTION", new ActiveSessionEventHandler() {
-        @Override
-        public void handle(MessageEventModel messageEventModel, Set<WebSocketSession> sessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
-
-            sessionsToBeConnected.put(messageEventModel.getSession(), messageEventModel.getTargetConnectSession());
-
-
-            log.info("[+] {} handled", MANAGER_TO_REVERSE_SHELL_CONNECTION.getValue());
-
-        }
     })
+//    ,
+//    MANAGER_TO_REVERSE_SHELL_CONNECTION("MANAGER_TO_REVERSE_SHELL_CONNECTION", new ActiveSessionEventHandler() {
+//        @Override
+//        public void handle(MessageEventModel messageEventModel, Set<WebSocketSession> sessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
+//
+//            sessionsToBeConnected.put(messageEventModel.getSession(), messageEventModel.getTargetConnectSession());
+//
+//
+//            log.info("[+] {} handled", MANAGER_TO_REVERSE_SHELL_CONNECTION.getValue());
+//
+//        }
+//    })
 
     ;
 
