@@ -1,7 +1,6 @@
 package com.mtattab.c2cServer.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 import org.springframework.web.socket.WebSocketSession;

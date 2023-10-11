@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.service.commands;
+package com.mtattab.c2cServer.service.commands.manager;
 
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.service.Command;
@@ -27,7 +27,7 @@ public class TerminateCommand implements Command {
 
 
         if (targetSessionToBeKilled.isPresent()){
-            closeSession(targetSessionToBeKilled.get(), currentSocket);
+            SocketUtil.closeSession(targetSessionToBeKilled.get(), currentSocket);
 
         }else {
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
@@ -38,19 +38,6 @@ public class TerminateCommand implements Command {
 
     }
 
-    private void closeSession(WebSocketSession targetSessionToBeKilled, WebSocketSession currentSocket ){
-        try {
-            targetSessionToBeKilled.close(CloseStatus.NORMAL);
-            SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                    .msg(String.format("session '%s' killed successfuly",targetSessionToBeKilled.getId()))
-                    .build()
-            )));
-        }catch (Exception e){
-            SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                    .msg(String.format("Exception while closing session '%s' : %s",targetSessionToBeKilled.getId(),e.getMessage() ))
-                    .build()
-            )));
-        }
-    }
+
 
 }

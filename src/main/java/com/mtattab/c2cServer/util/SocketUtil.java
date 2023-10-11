@@ -1,6 +1,9 @@
 package com.mtattab.c2cServer.util;
 
+import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import lombok.experimental.UtilityClass;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -23,5 +26,20 @@ public class SocketUtil {
         return sessionSet.stream()
                 .filter(session -> sessionId.equalsIgnoreCase(session.getId()))
                 .findFirst();
+    }
+
+    public void closeSession(WebSocketSession targetSessionToBeKilled, WebSocketSession currentSocket ){
+        try {
+            targetSessionToBeKilled.close(CloseStatus.NORMAL);
+            SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                    .msg(String.format("session '%s' killed successfuly",targetSessionToBeKilled.getId()))
+                    .build()
+            )));
+        }catch (Exception e){
+            SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                    .msg(String.format("Exception while closing session '%s' : %s",targetSessionToBeKilled.getId(),e.getMessage() ))
+                    .build()
+            )));
+        }
     }
 }

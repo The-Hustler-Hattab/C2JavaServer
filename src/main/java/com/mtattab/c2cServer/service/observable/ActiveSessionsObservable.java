@@ -1,7 +1,8 @@
 package com.mtattab.c2cServer.service.observable;
 
 import com.mtattab.c2cServer.model.MessageEventModel;
-import com.mtattab.c2cServer.model.enums.ActiveSessionsEvents;
+import com.mtattab.c2cServer.model.enums.events.ActiveSessionsEvents;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +47,7 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     public void removeReverseShellSession(WebSocketSession session){
         activeReverseShellSessions.remove(session);
         this.applicationEventPublisher.publishEvent(new MessageEventModel(this, ActiveSessionsEvents.LOST_CONNECTION, session));
+        ConnectionManager.disconnectConnection(session);
 
         log.info("[+] Session Closed {}",session);
 
@@ -57,6 +59,8 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     }
     public void removeManagerSession(WebSocketSession session){
         activeMangerSessions.remove(session);
+        ConnectionManager.disconnectConnection(session);
+
 
     }
 

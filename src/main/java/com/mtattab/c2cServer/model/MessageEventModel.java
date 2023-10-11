@@ -1,11 +1,9 @@
 package com.mtattab.c2cServer.model;
 
-import com.mtattab.c2cServer.model.enums.ActiveSessionsEvents;
+import com.mtattab.c2cServer.model.enums.events.ActiveSessionsEvents;
 import lombok.*;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.util.HashMap;
 
 
 @Getter

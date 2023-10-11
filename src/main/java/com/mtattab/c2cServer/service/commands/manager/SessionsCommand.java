@@ -1,8 +1,8 @@
-package com.mtattab.c2cServer.service.commands;
+package com.mtattab.c2cServer.service.commands.manager;
 
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.SocketCommunicationDTOModel;
-import com.mtattab.c2cServer.model.enums.ManagerCommands;
+import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.DataManipulationUtil;

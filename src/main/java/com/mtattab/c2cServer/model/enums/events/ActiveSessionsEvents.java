@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.model.enums;
+package com.mtattab.c2cServer.model.enums.events;
 
 import com.mtattab.c2cServer.model.MessageEventModel;
 import com.mtattab.c2cServer.model.SocketCommunicationDTOModel;
@@ -35,18 +35,7 @@ public enum ActiveSessionsEvents {
 
         }
     })
-//    ,
-//    MANAGER_TO_REVERSE_SHELL_CONNECTION("MANAGER_TO_REVERSE_SHELL_CONNECTION", new ActiveSessionEventHandler() {
-//        @Override
-//        public void handle(MessageEventModel messageEventModel, Set<WebSocketSession> sessions, HashMap<WebSocketSession, WebSocketSession> sessionsToBeConnected) {
-//
-//            sessionsToBeConnected.put(messageEventModel.getSession(), messageEventModel.getTargetConnectSession());
-//
-//
-//            log.info("[+] {} handled", MANAGER_TO_REVERSE_SHELL_CONNECTION.getValue());
-//
-//        }
-//    })
+
 
     ;
 
