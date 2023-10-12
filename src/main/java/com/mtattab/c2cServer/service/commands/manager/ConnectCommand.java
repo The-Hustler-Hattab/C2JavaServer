@@ -42,6 +42,7 @@ public class ConnectCommand implements Command {
         }else {
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("session '%s' not found ", args.get(1)))
+                    .success(false)
                     .build()
             )));
 

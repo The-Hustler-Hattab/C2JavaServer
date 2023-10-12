@@ -29,6 +29,7 @@ public class SessionsCommand implements Command {
             SocketUtil.sendMessage(currentSocket, new TextMessage(
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                             .msg("No session found")
+                            .success(true)
                             .build()
 
                     )));
@@ -37,6 +38,7 @@ public class SessionsCommand implements Command {
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                             .webSocketSessionSet(activeReverseShellSessions)
                             .msg("NOTE: You can use '"+ ManagerCommands.CONNECT_TO_ACTIVE_SESSION.getExample()+"' to connect to the session")
+                            .success(true)
                             .build()
 
                     )));

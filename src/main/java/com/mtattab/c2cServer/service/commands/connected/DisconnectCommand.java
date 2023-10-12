@@ -17,6 +17,7 @@ public class DisconnectCommand implements Command {
         SocketUtil.closeSession(connectedReverseShell,currentSocket);
         SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                 .msg(String.format("You have disconnected target socket '%s' successfuly",connectedReverseShell.getId() ))
+                        .success(true)
                 .build()
         )));
 

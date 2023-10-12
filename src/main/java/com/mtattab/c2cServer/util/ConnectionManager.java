@@ -48,6 +48,7 @@ public class ConnectionManager {
 
             SocketUtil.sendMessage(managerSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("current socket '%s' is already connected to: '%s' please disconnect first then try again",managerSocket.getId(), connectedManagerToReverseSessions.get(managerSocket)))
+                    .success(false)
                     .build()
             )));
             return false;
@@ -58,6 +59,8 @@ public class ConnectionManager {
             SocketUtil.sendMessage(managerSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("target socket '%s' is already connected to: '%s' you can force the connection with the use '-f' flag",socketToConnectTo,
                             connectedReverseToManagerSessions.get(socketToConnectTo)))
+                    .success(false)
+
                     .build()
             )));
             return false;
@@ -73,6 +76,8 @@ public class ConnectionManager {
             connect(managerSocket,socketToConnectTo);
             SocketUtil.sendMessage(managerSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("forcing connection to target socket '%s'",socketToConnectTo))
+                    .success(true)
+
                     .build()
             )));
 
@@ -81,6 +86,7 @@ public class ConnectionManager {
 
         SocketUtil.sendMessage(managerSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                 .msg(String.format("Connected successfuly to socket: '%s'",socketToConnectTo.getId()))
+                .success(true)
                 .build()
         )));
 

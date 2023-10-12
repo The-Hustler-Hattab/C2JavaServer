@@ -33,11 +33,13 @@ public class SocketUtil {
             targetSessionToBeKilled.close(CloseStatus.NORMAL);
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("session '%s' killed successfuly",targetSessionToBeKilled.getId()))
+                            .success(true)
                     .build()
             )));
         }catch (Exception e){
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("Exception while closing session '%s' : %s",targetSessionToBeKilled.getId(),e.getMessage() ))
+                            .success(false)
                     .build()
             )));
         }

@@ -16,6 +16,7 @@ public class BackgroundCommand implements Command {
         ConnectionManager.disconnectConnection(currentSocket);
         SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                 .msg(String.format("You have returned to the manager screen successfuly" ))
+                .success(true)
                 .build()
         )));
 

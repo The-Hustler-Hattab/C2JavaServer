@@ -8,7 +8,6 @@ import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -32,6 +31,7 @@ public class TerminateCommand implements Command {
         }else {
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                     .msg(String.format("session '%s' not found ", args.get(1)))
+                    .success(false)
                     .build()
             )));
         }
