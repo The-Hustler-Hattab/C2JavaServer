@@ -2,12 +2,19 @@ package com.mtattab.c2cServer.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @UtilityClass
@@ -59,5 +66,15 @@ public class DataManipulationUtil {
             return null;
         }
     }
+
+    public File convertMultiPartToFile(MultipartFile file) throws IOException {
+        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        @Cleanup
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        return convFile;
+    }
+
+
 
 }

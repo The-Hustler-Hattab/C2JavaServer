@@ -73,8 +73,8 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 //        ManagerCommunicationModel managerCommunicationModel= DataManipulationUtil.jsonToObject(clientMessage, ManagerCommunicationModel.class);
 
         // Handle the client's message (e.g., send a response back to the client)
-        String responseMessage = "Received your message: " + clientMessage;
-//        System.out.println(managerCommunicationModel);
+        String responseMessage =  clientMessage;
+        System.out.println(responseMessage);
 
         WebSocketSession mangerSession = ConnectionManager.connectedReverseToManagerSessions.get(session);
         if (mangerSession!=null){

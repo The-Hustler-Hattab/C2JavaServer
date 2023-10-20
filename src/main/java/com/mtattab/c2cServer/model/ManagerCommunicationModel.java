@@ -25,7 +25,7 @@ public class ManagerCommunicationModel {
 
     private String msg;
 
-    private boolean success;
+    private Boolean success;
 
 
 }
