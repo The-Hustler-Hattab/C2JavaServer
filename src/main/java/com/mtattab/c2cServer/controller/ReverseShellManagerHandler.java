@@ -1,8 +1,6 @@
 package com.mtattab.c2cServer.controller;
 
-import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
 import com.mtattab.c2cServer.service.impl.ReverseShellManagerObserverServiceImpl;
-import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;
@@ -28,7 +26,6 @@ public class ReverseShellManagerHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         super.afterConnectionClosed(session, status);
         reverseShellManagerObserverService.removeMangerSession(session);
-
 
     }
 }

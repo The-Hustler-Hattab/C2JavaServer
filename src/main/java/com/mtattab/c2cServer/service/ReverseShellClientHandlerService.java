@@ -11,4 +11,6 @@ public interface ReverseShellClientHandlerService {
 
     void removeActiveSession(WebSocketSession session);
     void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException;
+
+    void sendIntialMessage(WebSocketSession session);
 }

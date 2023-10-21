@@ -1,5 +1,6 @@
 package com.mtattab.c2cServer.service.impl;
 
+import com.mtattab.c2cServer.model.InitialConnectionMessageModel;
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.MessageEventModel;
 import com.mtattab.c2cServer.model.enums.events.ActiveSessionsEvents;
@@ -99,6 +100,8 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
         }
 
     }
+
+
 
 
 

