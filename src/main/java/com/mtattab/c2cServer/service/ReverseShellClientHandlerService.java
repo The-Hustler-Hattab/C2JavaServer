@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public interface ReverseShellClientHandlerService {
 
-    void addActiveSession(WebSocketSession session);
+    void addActiveSession(WebSocketSession session, TextMessage message);
 
     void removeActiveSession(WebSocketSession session);
     void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException;
