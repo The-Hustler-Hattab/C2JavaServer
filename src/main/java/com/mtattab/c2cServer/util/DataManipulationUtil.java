@@ -68,9 +68,13 @@ public class DataManipulationUtil {
     }
 
     public File convertMultiPartToFile(MultipartFile file) throws IOException {
-        File convFile = new File(Objects.requireNonNull(file.getOriginalFilename()));
+        String tempDir = System.getProperty("java.io.tmpdir");
+//        System.out.println(tempDir);
+        File convFile = new File(tempDir ,Objects.requireNonNull(file.getOriginalFilename()));
+
         @Cleanup
         FileOutputStream fos = new FileOutputStream(convFile);
+
         fos.write(file.getBytes());
         return convFile;
     }

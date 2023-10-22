@@ -15,15 +15,19 @@ public class S3ServiceTest {
     S3ServiceImpl s3Service;
 
     @Test
-    public void uploadFileToS3Test() throws Exception {
-        // Create a mock file
-        String originalFilename = "testfile.txt";
+    public void listFilesInS3Test() throws Exception {
 
+        System.out.println(s3Service.getListOfFiles("0b9add0a-9aa9-19e5-72cd-dcf280b60677"));
 
 //        s3Service.uploadFileToS3(convertFileToMultipartFile(originalFilename),"test");
+    }
 
+    @Test
+    public void deleteFileInS3Test() {
 
-;
+        System.out.println(s3Service.deleteFileFromS3Bucket
+                ( "af07b7fd-257c-d032-f4b8-a40bbad409be","2023-10-21_19-01-pom.xml"));
+
     }
 
 

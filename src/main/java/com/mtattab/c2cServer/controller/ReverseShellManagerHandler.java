@@ -15,11 +15,13 @@ public class ReverseShellManagerHandler extends TextWebSocketHandler {
     ReverseShellManagerObserverServiceImpl reverseShellManagerObserverService;
 
 
+
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         reverseShellManagerObserverService.addMangerSession(session);
 
         reverseShellManagerObserverService.handleManagerSession(session, message);
+
     }
 
     @Override
