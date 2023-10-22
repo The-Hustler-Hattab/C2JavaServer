@@ -1,7 +1,7 @@
 package com.mtattab.c2cServer.config;
 
-import com.mtattab.c2cServer.controller.ReverseShellClientsHandler;
-import com.mtattab.c2cServer.controller.ReverseShellManagerHandler;
+import com.mtattab.c2cServer.controller.websocket.ReverseShellClientsHandler;
+import com.mtattab.c2cServer.controller.websocket.ReverseShellManagerHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

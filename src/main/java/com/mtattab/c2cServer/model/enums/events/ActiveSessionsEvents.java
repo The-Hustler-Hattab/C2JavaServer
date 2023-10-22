@@ -1,7 +1,7 @@
 package com.mtattab.c2cServer.model.enums.events;
 
-import com.mtattab.c2cServer.model.MessageEventModel;
-import com.mtattab.c2cServer.model.SocketCommunicationDTOModel;
+import com.mtattab.c2cServer.model.json.MessageEventModel;
+import com.mtattab.c2cServer.model.json.SocketCommunicationDTOModel;
 import com.mtattab.c2cServer.service.ActiveSessionEventHandler;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;

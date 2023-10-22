@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.model;
+package com.mtattab.c2cServer.model.json;
 
 import lombok.Builder;
 import lombok.Data;

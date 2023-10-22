@@ -1,7 +1,7 @@
 package com.mtattab.c2cServer.service.factory;
 
 import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
-import com.mtattab.c2cServer.model.exceptions.CommandNotFoundException;
+import com.mtattab.c2cServer.exceptions.CommandNotFoundException;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.CommandFactory;
 import com.mtattab.c2cServer.service.commands.manager.ConnectCommand;

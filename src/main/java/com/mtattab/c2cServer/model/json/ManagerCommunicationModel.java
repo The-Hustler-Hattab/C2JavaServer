@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.model;
+package com.mtattab.c2cServer.model.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

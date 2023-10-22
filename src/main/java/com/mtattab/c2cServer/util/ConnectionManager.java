@@ -1,13 +1,14 @@
 package com.mtattab.c2cServer.util;
 
-import com.mtattab.c2cServer.model.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
+
 
 @UtilityClass
 @Slf4j
@@ -18,29 +19,23 @@ public class ConnectionManager {
 
     public static void disconnectConnection(WebSocketSession session){
         log.info("[+] Disconnecting session {} if it has any active connections to other sockets ",session);
-        removeByValue(connectedReverseToManagerSessions, session);
-        removeByValue(connectedManagerToReverseSessions, session);
+        DataManipulationUtil.removeByValue(connectedReverseToManagerSessions, session);
+        DataManipulationUtil.removeByValue(connectedManagerToReverseSessions, session);
     }
 
-
-
-    private static <T> void removeByValue(HashMap<T, T> hashMap, T value ){
-//        the below will remove the item from the list based on its value
-        hashMap.remove(value);
-        ArrayList<T> keysToRemove = new ArrayList<>();
-
-        // First, identify keys to remove
-        hashMap.keySet().parallelStream().forEach(key -> {
-            if (hashMap.get(key) != null && hashMap.get(key).equals(value)) {
-                keysToRemove.add(key);
-                log.info("found an active connection with socket {}",hashMap.get(key));
+    public static WebSocketSession getBySessionId(String sessionId, HashMap<WebSocketSession, WebSocketSession > sessions){
+        Set<WebSocketSession> sessionSet=  sessions.keySet();
+        for (WebSocketSession webSocketSession : sessionSet) {
+            if (sessionId.equalsIgnoreCase(webSocketSession.getId())){
+                return webSocketSession;
             }
-        });
-
-        // Then, remove the identified keys
-        keysToRemove.forEach(hashMap::remove);
-
+        }
+        return null;
     }
+
+
+
+
 
     public static boolean connectTwoSockets(WebSocketSession managerSocket, WebSocketSession socketToConnectTo, boolean forceConnect){
 //        if manger socket is already connected to something ask user to disconnect first

@@ -6,23 +6,38 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
-import com.mtattab.c2cServer.model.RestOutputModel;
+import com.mtattab.c2cServer.model.enums.status.S3FileStatus;
+import com.mtattab.c2cServer.model.json.RestOutputModel;
+import com.mtattab.c2cServer.model.entity.SessionFilesEntity;
+import com.mtattab.c2cServer.repository.SessionFilesRepository;
+import com.mtattab.c2cServer.repository.dao.SessionLogFilesIntegrationDao;
 import com.mtattab.c2cServer.service.S3Service;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.GenericOperationsUtil;
 import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 public class S3ServiceImpl implements S3Service {
+
+    @Autowired
+    SessionLogFilesIntegrationDao sessionLogFilesIntegrationDao;
+
+    @Autowired
+    SessionFilesRepository sessionFilesRepository;
+
     @Value("${aws.s3.secret}")
     private String s3Secret;
 
@@ -61,19 +76,31 @@ public class S3ServiceImpl implements S3Service {
 
     public RestOutputModel uploadFile(MultipartFile multipartFile, String dir) {
         RestOutputModel restOutputModel = new RestOutputModel();
+        SessionFilesEntity sessionFilesEntity = new SessionFilesEntity();
         String fileUrl = "";
         try {
             File file = DataManipulationUtil.convertMultiPartToFile(multipartFile);
             String fileName = dir + "/" + this.generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + s3BucketName + "/"  + fileName;
+
+
             uploadFileTos3bucket(fileName, file);
             file.delete();
+
+//            save file into the db
+            sessionFilesEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+            sessionFilesEntity.setFile(fileName);
+            sessionFilesEntity.setFileStatus(S3FileStatus.FILE_CREATED.getStatus());
+            sessionLogFilesIntegrationDao.saveFilesIntoLog(Collections.singletonList(sessionFilesEntity),dir);
+
         } catch (Exception e) {
             e.printStackTrace();
             restOutputModel.setMsg("Failed to Save file into s3 due to: "+e.getMessage());
             restOutputModel.setStatusCode(500);
             return restOutputModel;
         }
+
+
         restOutputModel.setStatusCode(200);
         restOutputModel.setMsg("Saved file into s3 successfully with path: "+fileUrl);
 
@@ -127,6 +154,12 @@ public class S3ServiceImpl implements S3Service {
             restOutputModel.setMsg( "Successfully deleted" );
             restOutputModel.setStatusCode(200);
             deleteFolderIfEmpty(folder);
+            sessionFilesRepository.updateFileStatus(
+                    Timestamp.valueOf(LocalDateTime.now()),
+                    S3FileStatus.FILE_DELETED.getStatus(),
+                    filePath );
+
+
             return restOutputModel;
         }else {
 

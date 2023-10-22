@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "SESSION_LOGS")
@@ -58,6 +59,11 @@ public class SessionLogEntity {
 
     @Column(name = "USER_LANGUAGE", nullable = true)
     private String userLanguage;
+
+
+    @OneToMany(mappedBy = "sessionLog", fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST, targetEntity = SessionFilesEntity.class)
+    private List<SessionFilesEntity> sessionFiles;
 
 
 

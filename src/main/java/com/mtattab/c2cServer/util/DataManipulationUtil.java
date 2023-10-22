@@ -11,10 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @UtilityClass
@@ -79,6 +76,24 @@ public class DataManipulationUtil {
         return convFile;
     }
 
+
+    public static <T> void removeByValue(HashMap<T, T> hashMap, T value ){
+//        the below will remove the item from the list based on its value
+        hashMap.remove(value);
+        ArrayList<T> keysToRemove = new ArrayList<>();
+
+        // First, identify keys to remove
+        hashMap.keySet().parallelStream().forEach(key -> {
+            if (hashMap.get(key) != null && hashMap.get(key).equals(value)) {
+                keysToRemove.add(key);
+                log.info("found an active connection with socket {}",hashMap.get(key));
+            }
+        });
+
+        // Then, remove the identified keys
+        keysToRemove.forEach(hashMap::remove);
+
+    }
 
 
 }

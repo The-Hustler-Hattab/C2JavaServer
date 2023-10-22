@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.util;
 
-import com.mtattab.c2cServer.model.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
 import lombok.experimental.UtilityClass;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;

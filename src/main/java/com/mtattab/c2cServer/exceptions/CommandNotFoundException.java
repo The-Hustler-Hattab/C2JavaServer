@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.model.exceptions;
+package com.mtattab.c2cServer.exceptions;
 
 public class CommandNotFoundException extends Exception{
 

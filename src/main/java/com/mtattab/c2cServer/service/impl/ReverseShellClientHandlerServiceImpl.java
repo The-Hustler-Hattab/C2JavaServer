@@ -1,8 +1,8 @@
 package com.mtattab.c2cServer.service.impl;
 
-import com.mtattab.c2cServer.model.InitialConnectionMessageModel;
-import com.mtattab.c2cServer.model.ManagerCommunicationModel;
-import com.mtattab.c2cServer.model.ReverseShellInfoInitialMessage;
+import com.mtattab.c2cServer.model.json.InitialConnectionMessageModel;
+import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.ReverseShellInfoInitialMessage;
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
 import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;

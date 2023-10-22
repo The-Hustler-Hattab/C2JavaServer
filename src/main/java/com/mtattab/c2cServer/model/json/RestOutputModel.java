@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.model;
+package com.mtattab.c2cServer.model.json;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.fasterxml.jackson.annotation.JsonIgnore;
