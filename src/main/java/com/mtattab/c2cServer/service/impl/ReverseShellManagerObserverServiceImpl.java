@@ -33,7 +33,6 @@ import java.util.Optional;
 @Service
 @Slf4j
 @Data
-
 public class ReverseShellManagerObserverServiceImpl implements  ApplicationListener<MessageEventModel>, ReverseShellManagerService {
 
     @Autowired

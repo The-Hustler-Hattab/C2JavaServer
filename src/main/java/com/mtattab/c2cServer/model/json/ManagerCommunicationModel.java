@@ -22,9 +22,10 @@ public class ManagerCommunicationModel {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String slaveSessionId;
 
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String msg;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean success;
 
 
