@@ -1,5 +1,6 @@
 package com.mtattab.c2cServer.util;
 
+import jakarta.persistence.EntityManager;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -17,5 +18,12 @@ public class GenericOperationsUtil {
 
         // Format the current date and time using the defined format
         return now.format(formatter);
+    }
+
+
+    public void closeEntityManager(EntityManager entityManager){
+        if (entityManager.isOpen()){
+            entityManager.close();
+        }
     }
 }

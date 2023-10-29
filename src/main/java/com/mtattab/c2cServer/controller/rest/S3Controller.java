@@ -20,7 +20,6 @@ public class S3Controller {
     S3ServiceImpl s3Service;
 
     @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE} )
-//    @Valid
     public ResponseEntity<RestOutputModel> uploadFile(@RequestPart("file") MultipartFile file
             , @Valid  @RequestParam("sessionId") @SessionExistsValidator String sessionId) {
         RestOutputModel restOutputModel = s3Service.uploadFile(file, sessionId);
@@ -39,9 +38,8 @@ public class S3Controller {
     }
 
     @DeleteMapping(value = "/deleteFile", produces = {MediaType.APPLICATION_JSON_VALUE} )
-    public ResponseEntity<RestOutputModel> deleteFile(@RequestParam("dir") String dir
-            , @RequestParam("file") String file) {
-        RestOutputModel restOutputModel = s3Service.deleteFileFromS3Bucket(dir,file);
+    public ResponseEntity<RestOutputModel> deleteFile(@RequestParam("file") String file) {
+        RestOutputModel restOutputModel = s3Service.deleteFileFromS3Bucket(file);
 
         return new ResponseEntity<>(restOutputModel, HttpStatusCode.valueOf(restOutputModel
                 .getStatusCode()));
@@ -50,9 +48,9 @@ public class S3Controller {
 
 
     @GetMapping(value = "/getS3File", produces = {MediaType.APPLICATION_OCTET_STREAM_VALUE} )
-    public ResponseEntity<byte[]> getS3File(String folder, String file) {
+    public ResponseEntity<byte[]> getS3File(String file) {
 
-        RestOutputModel restOutputModel = s3Service.getFileFromS3Bucket(folder,file);
+        RestOutputModel restOutputModel = s3Service.getFileFromS3Bucket(file);
         if (restOutputModel.getS3Object() == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }

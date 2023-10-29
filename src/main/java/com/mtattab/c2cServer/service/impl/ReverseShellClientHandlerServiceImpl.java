@@ -54,6 +54,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
                     .sessionLocalAddress(session.getLocalAddress().toString())
                     .sessionRemoteAddress(session.getRemoteAddress().toString())
                     .sessionCreatedAt(Timestamp.valueOf(LocalDateTime.now()))
+                    .hasFiles("N")
                     .build();
 
 

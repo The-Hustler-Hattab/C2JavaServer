@@ -2,6 +2,8 @@ package com.mtattab.c2cServer.model.entity;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,10 +33,12 @@ public class SessionLogEntity {
     @Column(name = "SESSION_LOCAL_ADDRESS", nullable = false)
     private String sessionLocalAddress;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Column(name = "SESSION_CREATED_AT", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp sessionCreatedAt;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Column(name = "SESSION_CLOSED_AT", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp sessionClosedAt;
@@ -60,11 +64,30 @@ public class SessionLogEntity {
     @Column(name = "USER_LANGUAGE", nullable = true)
     private String userLanguage;
 
+    @Column(name = "HAS_Files", nullable = true)
+    private String hasFiles;
 
     @OneToMany(mappedBy = "sessionLog", fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST, targetEntity = SessionFilesEntity.class)
     private List<SessionFilesEntity> sessionFiles;
 
-
-
+    @Override
+    public String toString() {
+        return "SessionLogEntity{" +
+                "id=" + id +
+                ", sessionId='" + sessionId + '\'' +
+                ", sessionRemoteAddress='" + sessionRemoteAddress + '\'' +
+                ", sessionLocalAddress='" + sessionLocalAddress + '\'' +
+                ", sessionCreatedAt=" + sessionCreatedAt +
+                ", sessionClosedAt=" + sessionClosedAt +
+                ", osName='" + osName + '\'' +
+                ", osVersion='" + osVersion + '\'' +
+                ", osArch='" + osArch + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userHome='" + userHome + '\'' +
+                ", userCurrentWorkingDir='" + userCurrentWorkingDir + '\'' +
+                ", userLanguage='" + userLanguage + '\'' +
+                ", hasFiles='" + hasFiles + '\'' +
+                '}';
+    }
 }

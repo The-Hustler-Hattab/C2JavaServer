@@ -144,16 +144,16 @@ public class S3ServiceImpl implements S3Service {
 
     }
 
-    public RestOutputModel deleteFileFromS3Bucket(String folder, String fileName) {
+    public RestOutputModel deleteFileFromS3Bucket( String fileName) {
         RestOutputModel restOutputModel = new RestOutputModel();
-        String filePath= folder+"/"+fileName;
+        String filePath= fileName;
         boolean fileExists = s3client.doesObjectExist(s3BucketName, filePath);
 
         if (fileExists){
             s3client.deleteObject(new DeleteObjectRequest(s3BucketName , filePath));
             restOutputModel.setMsg( "Successfully deleted" );
             restOutputModel.setStatusCode(200);
-            deleteFolderIfEmpty(folder);
+            deleteFolderIfEmpty(fileName);
             sessionFilesRepository.updateFileStatus(
                     Timestamp.valueOf(LocalDateTime.now()),
                     S3FileStatus.FILE_DELETED.getStatus(),
@@ -172,6 +172,9 @@ public class S3ServiceImpl implements S3Service {
     }
 
     private void deleteFolderIfEmpty(String folder){
+//        turn the string to list of files and return the first file since it is the root folder
+        List<String> fileStructure= DataManipulationUtil.stringToList(folder, "/");
+        folder = fileStructure.get(0);
 
         if (getListOfFiles(folder).getFilenames().isEmpty()){
             s3client.deleteObject(s3BucketName, folder+"/");
@@ -182,9 +185,9 @@ public class S3ServiceImpl implements S3Service {
 
 
 
-    public RestOutputModel getFileFromS3Bucket(String folder, String fileName) {
+    public RestOutputModel getFileFromS3Bucket( String fileName) {
         RestOutputModel restOutputModel = new RestOutputModel();
-        String filePath= folder+"/"+fileName;
+        String filePath= fileName;
         System.out.println(filePath);
         boolean fileExists = s3client.doesObjectExist(s3BucketName, filePath);
 

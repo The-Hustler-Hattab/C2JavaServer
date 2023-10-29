@@ -29,6 +29,7 @@ public class SessionLogFilesIntegrationDao {
 
             sessionFilesEntitySaved.forEach(file-> file.setSessionLog(sessionLogOptional.get()));
             sessionFilesRepository.saveAll(sessionFilesEntity);
+            sessionLogRepository.updateSessionToHaveFiles("Y",sessionId);
 
         }
 
