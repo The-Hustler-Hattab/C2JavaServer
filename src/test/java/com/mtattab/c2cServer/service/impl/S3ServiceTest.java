@@ -26,7 +26,7 @@ public class S3ServiceTest {
     public void deleteFileInS3Test() {
 
         System.out.println(s3Service.deleteFileFromS3Bucket
-                ( "af07b7fd-257c-d032-f4b8-a40bbad409be","2023-10-21_19-01-pom.xml"));
+                ( "af07b7fd-257c-d032-f4b8-a40bbad409be\\2023-10-21_19-01-pom.xml"));
 
     }
 
