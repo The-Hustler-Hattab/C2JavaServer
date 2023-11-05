@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.controller.websocket;
 
-import com.mtattab.c2cServer.service.impl.ReverseShellManagerObserverServiceImpl;
+import com.mtattab.c2cServer.service.impl.shell.management.ReverseShellManagerObserverServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.CloseStatus;

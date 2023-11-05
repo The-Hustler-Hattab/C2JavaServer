@@ -95,5 +95,18 @@ public class DataManipulationUtil {
 
     }
 
+    public static String getFileNameFromPath(String fullPath) {
+        String[] parts = fullPath.split("/");
+        if (parts.length > 0) {
+            return parts[parts.length - 1];
+        }
+        return fullPath; // Return the original string if no '/' is found
+    }
+    public static boolean endsWithSlash(String input) {
+        if (input == null || input.isEmpty()) {
+            return false;
+        }
+        return input.endsWith("/");
+    }
 
 }

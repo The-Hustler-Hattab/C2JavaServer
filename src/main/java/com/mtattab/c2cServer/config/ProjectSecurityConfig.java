@@ -31,6 +31,9 @@ public class ProjectSecurityConfig {
         corsConfig.applyPermitDefaultValues(); // This allows all origins, methods, and headers. Customize as needed.
 
         corsConfig.addAllowedOrigin("http://localhost:4200");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*"); // You might want to restrict headers
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig); // This means CORS will apply to all endpoints.
 

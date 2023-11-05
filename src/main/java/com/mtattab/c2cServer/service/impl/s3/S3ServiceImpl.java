@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.service.impl;
+package com.mtattab.c2cServer.service.impl.s3;
 
 
 import com.amazonaws.auth.AWSCredentials;
@@ -6,9 +6,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import com.mtattab.c2cServer.model.enums.s3.S3FileType;
 import com.mtattab.c2cServer.model.enums.status.S3FileStatus;
 import com.mtattab.c2cServer.model.json.RestOutputModel;
 import com.mtattab.c2cServer.model.entity.SessionFilesEntity;
+import com.mtattab.c2cServer.model.json.s3.S3FileStructureJsonModel;
 import com.mtattab.c2cServer.repository.SessionFilesRepository;
 import com.mtattab.c2cServer.repository.dao.SessionLogFilesIntegrationDao;
 import com.mtattab.c2cServer.service.S3Service;
@@ -17,6 +19,7 @@ import com.mtattab.c2cServer.util.GenericOperationsUtil;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,10 +27,7 @@ import java.io.File;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class S3ServiceImpl implements S3Service {
@@ -118,7 +118,7 @@ public class S3ServiceImpl implements S3Service {
         List<String >filenames= new ArrayList<>();
         for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
 //            System.out.println("File Name: " + objectSummary.getKey());
-            String fileName = extractFileName(objectSummary.getKey(), "/");
+            String fileName = DataManipulationUtil.getFileNameFromPath(objectSummary.getKey());
             if (fileName.equalsIgnoreCase(startingPath)) continue;
             filenames.add(fileName);
         }
@@ -128,21 +128,111 @@ public class S3ServiceImpl implements S3Service {
         return restOutputModel;
     }
 
-    private String extractFileName(String input, String delimiter) {
-        try {
-            // Split the input string using the '/' character
-            String[] parts = input.split(delimiter);
 
-            // Get the last part of the split array (which should be the filename)
-            String fileName = parts[parts.length - 1];
 
-            return fileName;
-        }catch (Exception e){
-            return input;
 
+    public RestOutputModel listFilesInBucket(String prefix) {
+        RestOutputModel restOutputModel = new RestOutputModel();
+        List<S3FileStructureJsonModel> result = new ArrayList<>();
+
+        listObjects(prefix, result);
+
+        restOutputModel.setMsg("Retrieved file structure successfully");
+        restOutputModel.setS3FileStructureJsonModels(result);
+        restOutputModel.setStatusCode(HttpStatus.OK.value());
+
+        return restOutputModel;
+    }
+
+    private void listObjects(String prefix, List<S3FileStructureJsonModel> result) {
+        ListObjectsV2Request request = new ListObjectsV2Request()
+                .withBucketName(this.s3BucketName)
+                .withPrefix(prefix);
+
+        ListObjectsV2Result response = s3client.listObjectsV2(request);
+
+        for (S3ObjectSummary summary : response.getObjectSummaries()) {
+            if (summary.getKey().equals(prefix)) {
+                // Skip the directory itself; we only want files and subdirectories
+                continue;
+            }
+
+            setupFileInS3Model(summary, result);
         }
+    }
+
+
+    private void setupFileInS3Model(S3ObjectSummary summary, List<S3FileStructureJsonModel> result){
+
+        String key = summary.getKey();
+        String[] keyParts = key.split("/");
+
+        if (keyParts.length == 1) {
+            // This is a file at the root level
+            S3FileStructureJsonModel file = S3FileStructureJsonModel.builder()
+                    .name(key)
+                    .path(key)
+                    .type(S3FileType.FILE)
+                    .updated(new Date(summary.getLastModified().getTime()))
+                    .build();
+            result.add(file);
+        } else {
+            // This is a file within a subdirectory
+            String parentDirectory = keyParts[0];
+
+
+            S3FileStructureJsonModel folder = result
+                    .stream()
+                    .filter(item -> item.getName().equals(parentDirectory))
+                    .findFirst()
+                    .orElse(null);
+
+            if (folder == null
+//            && summary.getETag() == null
+            ) {
+
+                    folder = S3FileStructureJsonModel.builder()
+                            .name(parentDirectory)
+                            .path(parentDirectory)
+                            .type(S3FileType.FOLDER)
+                            .subFolders(new ArrayList<>())
+                            .build();
+                    result.add(folder);
+
+
+            }
+            if (summary.getETag() != null && !DataManipulationUtil.endsWithSlash(summary.getKey())){
+                S3FileStructureJsonModel file = S3FileStructureJsonModel.builder()
+                        .name(keyParts[keyParts.length-1])
+                        .path(key)
+                        .type(S3FileType.FILE)
+                        .updated(new Date(summary.getLastModified().getTime()))
+                        .build();
+                folder.getSubFolders().add(file);
+
+            }
+
+            System.out.println(summary);
+        }
+    }
+
+
+
+    private boolean isFolder(S3ObjectSummary summary){
+//        if etag is null than it is a folder
+        if (summary.getETag() == null){
+            return true;
+        }else return false;
 
     }
+
+
+
+
+
+
+
+
 
     public RestOutputModel deleteFileFromS3Bucket( String fileName) {
         RestOutputModel restOutputModel = new RestOutputModel();

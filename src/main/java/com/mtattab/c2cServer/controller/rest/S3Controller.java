@@ -2,7 +2,8 @@ package com.mtattab.c2cServer.controller.rest;
 
 import com.mtattab.c2cServer.annotations.SessionExistsValidator;
 import com.mtattab.c2cServer.model.json.RestOutputModel;
-import com.mtattab.c2cServer.service.impl.S3ServiceImpl;
+import com.mtattab.c2cServer.service.impl.s3.S3ServiceImpl;
+import com.mtattab.c2cServer.util.DataManipulationUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -37,6 +38,16 @@ public class S3Controller {
 
     }
 
+    @GetMapping(value = "/getJsonListFiles", produces = {MediaType.APPLICATION_JSON_VALUE} )
+    public ResponseEntity<RestOutputModel> getJsonListFiles() {
+        RestOutputModel restOutputModel = s3Service.listFilesInBucket("");
+
+        return new ResponseEntity<>(restOutputModel, HttpStatusCode.valueOf(restOutputModel.getStatusCode()));
+
+    }
+
+
+
     @DeleteMapping(value = "/deleteFile", produces = {MediaType.APPLICATION_JSON_VALUE} )
     public ResponseEntity<RestOutputModel> deleteFile(@RequestParam("file") String file) {
         RestOutputModel restOutputModel = s3Service.deleteFileFromS3Bucket(file);
@@ -59,7 +70,9 @@ public class S3Controller {
             byte[] fileBytes = restOutputModel.getS3Object().getObjectContent().readAllBytes();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", file);
+            headers.setContentDispositionFormData("attachment",
+                    DataManipulationUtil.getFileNameFromPath(file));
+
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(fileBytes);

@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.service.impl;
+package com.mtattab.c2cServer.service.impl.tables;
 
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.model.json.RestOutputModel;
