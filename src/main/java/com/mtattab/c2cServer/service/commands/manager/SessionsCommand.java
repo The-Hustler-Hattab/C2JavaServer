@@ -5,6 +5,7 @@ import com.mtattab.c2cServer.model.json.SocketCommunicationDTOModel;
 import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,12 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 public class SessionsCommand implements Command {
-    @Autowired
-    ActiveSessionsObservable activeSessionsObservable;
+
 
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
-        List<SocketCommunicationDTOModel> activeReverseShellSessions =  activeSessionsObservable.getActiveReverseShellSessions().stream()
+        List<SocketCommunicationDTOModel> activeReverseShellSessions =  ConnectionManager.activeReverseShellSessions.stream()
                 .map(SocketCommunicationDTOModel::new).collect(Collectors.toList());
 
         if (activeReverseShellSessions.isEmpty()){

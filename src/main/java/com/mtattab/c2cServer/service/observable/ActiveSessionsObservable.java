@@ -24,10 +24,10 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     private ApplicationEventPublisher applicationEventPublisher;
 
 
-    Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
+//    Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
 
 
-    Set<WebSocketSession> activeMangerSessions = new HashSet<>();
+//    Set<WebSocketSession> activeMangerSessions = new HashSet<>();
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -36,7 +36,7 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
 
 
     public void addReverseShellSession(WebSocketSession session){
-        activeReverseShellSessions.add(session);
+        ConnectionManager.activeReverseShellSessions.add(session);
 
         this.applicationEventPublisher.publishEvent(new MessageEventModel(this, ActiveSessionsEvents.RECEIVED_NEW_CONNECTION, session));
 
@@ -45,7 +45,7 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     }
 
     public void removeReverseShellSession(WebSocketSession session){
-        activeReverseShellSessions.remove(session);
+        ConnectionManager.activeReverseShellSessions.remove(session);
         this.applicationEventPublisher.publishEvent(new MessageEventModel(this, ActiveSessionsEvents.LOST_CONNECTION, session));
         ConnectionManager.disconnectConnection(session);
 
@@ -55,10 +55,10 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     }
 
     public void addManagerSession(WebSocketSession session){
-        activeMangerSessions.add(session);
+        ConnectionManager.activeMangerSessions.add(session);
     }
     public void removeManagerSession(WebSocketSession session){
-        activeMangerSessions.remove(session);
+        ConnectionManager.activeMangerSessions.remove(session);
         ConnectionManager.disconnectConnection(session);
 
 

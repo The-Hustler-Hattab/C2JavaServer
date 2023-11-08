@@ -1,18 +1,29 @@
 package com.mtattab.c2cServer.util;
 
 import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 
 @UtilityClass
 @Slf4j
+@Getter
 public class ConnectionManager {
+
+
+    public static Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
+
+
+    public static Set<WebSocketSession> activeMangerSessions = new HashSet<>();
+
+
     public static HashMap<WebSocketSession, WebSocketSession > connectedManagerToReverseSessions= new HashMap<>();
 
     public static HashMap<WebSocketSession, WebSocketSession > connectedReverseToManagerSessions= new HashMap<>();

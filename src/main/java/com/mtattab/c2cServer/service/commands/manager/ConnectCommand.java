@@ -16,18 +16,16 @@ import java.util.List;
 import java.util.Optional;
 
 
-@Component
 @Slf4j
 public class ConnectCommand implements Command {
-    @Autowired
-    ActiveSessionsObservable activeSessionsObservable;
+
 
 
 
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
         Optional<WebSocketSession> targetSessionToBeConnectedTo = SocketUtil.findSessionByIdInSessionSet(
-                activeSessionsObservable.getActiveReverseShellSessions(),args.get(1));
+                ConnectionManager.activeReverseShellSessions,args.get(1));
 
         if (targetSessionToBeConnectedTo.isPresent()){
             connectToSession(currentSocket, targetSessionToBeConnectedTo.get(), args);

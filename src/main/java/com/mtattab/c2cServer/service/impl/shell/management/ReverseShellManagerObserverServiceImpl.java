@@ -42,8 +42,8 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     @Autowired
     ManagerCommandFactory managerCommandFactory;
 
-    @Autowired
-    SessionsCommand sessionsCommand;
+//    @Autowired
+//    SessionsCommand sessionsCommand;
 
 
     @Override
@@ -54,7 +54,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
                 .findFirst();
 
         if (matchingEvent.isPresent()) {
-            matchingEvent.get().getEventHandler().handle(messageEventModels, activeSessionsObservable.getActiveMangerSessions());
+            matchingEvent.get().getEventHandler().handle(messageEventModels, ConnectionManager.activeMangerSessions );
         } else {
             log.error("[-] Event Not Found");
             throw new RuntimeException("Something wrong happened while handling observable change event" );
@@ -105,7 +105,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
 
     public void showSessionsForIntialConnections(WebSocketSession session){
 
-        Command command = sessionsCommand;
+        Command command = new SessionsCommand();
         command.execute(null, session);
 
     }

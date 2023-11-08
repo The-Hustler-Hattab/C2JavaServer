@@ -30,7 +30,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
     SessionLogRepository sessionLogRepository;
 
     public void addActiveSession(WebSocketSession session, TextMessage message){
-        if (!activeSessionsObservable.getActiveReverseShellSessions().contains(session)){
+        if (!ConnectionManager.activeReverseShellSessions.contains(session)){
             activeSessionsObservable.addReverseShellSession(session);
             logSessionInDb(session, message);
         }

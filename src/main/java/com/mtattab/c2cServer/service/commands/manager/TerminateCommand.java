@@ -3,6 +3,7 @@ package com.mtattab.c2cServer.service.commands.manager;
 import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +18,11 @@ import java.util.Optional;
 @Component
 @Slf4j
 public class TerminateCommand implements Command {
-    @Autowired
-    ActiveSessionsObservable activeSessionsObservable;
+
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
         Optional<WebSocketSession> targetSessionToBeKilled = SocketUtil.findSessionByIdInSessionSet(
-                activeSessionsObservable.getActiveReverseShellSessions(),args.get(1));
+                ConnectionManager.activeReverseShellSessions ,args.get(1));
 
 
         if (targetSessionToBeKilled.isPresent()){

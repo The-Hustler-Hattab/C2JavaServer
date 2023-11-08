@@ -20,13 +20,7 @@ import java.util.Optional;
 @Component
 public class ManagerCommandFactory implements CommandFactory {
 
-    @Autowired
-    SessionsCommand sessionsCommand;
-    @Autowired
-    TerminateCommand terminateCommand;
 
-    @Autowired
-    ConnectCommand connectCommand;
 
     public Command createCommand(String userInput) throws CommandNotFoundException {
         List<String> userInputAsList= DataManipulationUtil.stringToList(userInput, " ");
@@ -48,13 +42,13 @@ public class ManagerCommandFactory implements CommandFactory {
                 return new HelpManagerCommand();
             }
             case LIST_ACTIVE_SESSIONS -> {
-                return sessionsCommand;
+                return new SessionsCommand();
             }
             case TERMINATE_ACTIVE_SESSION -> {
-                return terminateCommand;
+                return new TerminateCommand();
             }
             case CONNECT_TO_ACTIVE_SESSION -> {
-                return connectCommand;
+                return new ConnectCommand();
             }
             default -> throw new CommandNotFoundException();
         }
