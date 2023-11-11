@@ -24,10 +24,7 @@ public class ActiveSessionsObservable  implements ApplicationEventPublisherAware
     private ApplicationEventPublisher applicationEventPublisher;
 
 
-//    Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
 
-
-//    Set<WebSocketSession> activeMangerSessions = new HashSet<>();
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

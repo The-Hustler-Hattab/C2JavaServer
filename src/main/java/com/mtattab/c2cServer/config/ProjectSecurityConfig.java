@@ -31,6 +31,8 @@ public class ProjectSecurityConfig {
         corsConfig.applyPermitDefaultValues(); // This allows all origins, methods, and headers. Customize as needed.
 
         corsConfig.addAllowedOrigin("http://localhost:4200");
+        corsConfig.addAllowedOrigin("https://c2.mtattab.com");
+
         corsConfig.addAllowedMethod("*");
         corsConfig.addAllowedHeader("*"); // You might want to restrict headers
 

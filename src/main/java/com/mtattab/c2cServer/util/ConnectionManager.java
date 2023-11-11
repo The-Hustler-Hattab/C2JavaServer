@@ -91,7 +91,7 @@ public class ConnectionManager {
         }
 
         SocketUtil.sendMessage(managerSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                .msg(String.format("Connected successfuly to socket: '%s'",socketToConnectTo.getId()))
+                .msg(String.format("Connected successfully to socket: '%s'. You can use /?? for agent help and use /? for server help menu",socketToConnectTo.getId()))
                 .success(true)
                 .build()
         )));
