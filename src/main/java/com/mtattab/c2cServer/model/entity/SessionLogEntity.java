@@ -22,25 +22,30 @@ public class SessionLogEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
     @Column(name = "SESSION_ID", nullable = false)
     private String sessionId;
 
     @Column(name = "SESSION_REMOTE_ADDRESS", nullable = false)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String sessionRemoteAddress;
 
     @Column(name = "SESSION_LOCAL_ADDRESS", nullable = false)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String sessionLocalAddress;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Column(name = "SESSION_CREATED_AT", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp sessionCreatedAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", shape = JsonFormat.Shape.STRING)
     @Column(name = "SESSION_CLOSED_AT", nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Timestamp sessionClosedAt;
 
     @Column(name = "OS_NAME", nullable = true)
@@ -64,11 +69,16 @@ public class SessionLogEntity {
     @Column(name = "USER_LANGUAGE", nullable = true)
     private String userLanguage;
 
+    @Column(name = "PUBLIC_IP", nullable = true)
+    private String publicIp;
+
     @Column(name = "HAS_Files", nullable = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String hasFiles;
 
     @OneToMany(mappedBy = "sessionLog", fetch = FetchType.LAZY,
             cascade = CascadeType.PERSIST, targetEntity = SessionFilesEntity.class)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<SessionFilesEntity> sessionFiles;
 
     @Override

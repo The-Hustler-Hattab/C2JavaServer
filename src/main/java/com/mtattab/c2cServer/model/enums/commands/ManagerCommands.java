@@ -19,6 +19,9 @@ public enum ManagerCommands {
     CONNECT_TO_ACTIVE_SESSION("connect","connect to session by using its id", "connect <session-id> [-f]",
         "requires the use of a session id. '-f' is an optional parameter which force connects to a client by closing any connection it has with other managers "),
 
+    REQUEST_INFO_FOR_SESSION("info","Request info for the active session", "info <session-id>",
+            "requires the use of a session id."),
+
     ;
 
 

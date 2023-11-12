@@ -4,10 +4,7 @@ import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
 import com.mtattab.c2cServer.exceptions.CommandNotFoundException;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.CommandFactory;
-import com.mtattab.c2cServer.service.commands.manager.ConnectCommand;
-import com.mtattab.c2cServer.service.commands.manager.HelpManagerCommand;
-import com.mtattab.c2cServer.service.commands.manager.SessionsCommand;
-import com.mtattab.c2cServer.service.commands.manager.TerminateCommand;
+import com.mtattab.c2cServer.service.commands.manager.*;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +17,8 @@ import java.util.Optional;
 @Component
 public class ManagerCommandFactory implements CommandFactory {
 
+    @Autowired
+    InfoCommand infoCommand;
 
 
     public Command createCommand(String userInput) throws CommandNotFoundException {
@@ -49,6 +48,9 @@ public class ManagerCommandFactory implements CommandFactory {
             }
             case CONNECT_TO_ACTIVE_SESSION -> {
                 return new ConnectCommand();
+            }
+            case REQUEST_INFO_FOR_SESSION -> {
+                return infoCommand;
             }
             default -> throw new CommandNotFoundException();
         }

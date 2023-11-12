@@ -15,7 +15,6 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.List;
 import java.util.Optional;
 
-@Component
 @Slf4j
 public class TerminateCommand implements Command {
 

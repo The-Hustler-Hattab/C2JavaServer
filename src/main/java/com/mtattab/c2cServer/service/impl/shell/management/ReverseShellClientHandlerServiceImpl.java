@@ -19,6 +19,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -51,12 +52,12 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
             SessionLogEntity logEntity=  SessionLogEntity.builder()
                     .sessionId(session.getId())
-                    .sessionLocalAddress(session.getLocalAddress().toString())
-                    .sessionRemoteAddress(session.getRemoteAddress().toString())
+                    .sessionLocalAddress(Objects.requireNonNull(session.getLocalAddress()).toString())
+                    .sessionRemoteAddress(Objects.requireNonNull(session.getRemoteAddress()).toString())
+
                     .sessionCreatedAt(Timestamp.valueOf(LocalDateTime.now()))
                     .hasFiles("N")
                     .build();
-
 
             if (initialInfoMessage != null){
                 setUserInfoToTheLog(logEntity, initialInfoMessage);
@@ -80,6 +81,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
         logEntity.setUserHome(initialInfoMessage.getUserHome());
         logEntity.setUserCurrentWorkingDir(initialInfoMessage.getUserCurrentWorkingDir());
         logEntity.setUserLanguage(initialInfoMessage.getUserLanguage());
+        logEntity.setPublicIp(initialInfoMessage.getUserPublicIp());
     }
 
 
