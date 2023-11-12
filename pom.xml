@@ -136,6 +136,43 @@
           <skipTests>true</skipTests>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.43.0</version> <!-- Use the latest version -->
+        <configuration>
+          <verbose>true</verbose>
+
+          <images>
+            <image>
+              <name>c2-server</name>
+
+
+              <build>
+                <dockerFile>Dockerfile</dockerFile>
+                <tags>
+                  <tag>latest</tag>
+                  <tag>${project.version}</tag>
+                </tags>
+                <assembly>
+                  <descriptorRef>artifact</descriptorRef>
+                </assembly>
+                <ports>
+                  <port>8070</port>
+                </ports>
+
+              </build>
+              <!-- Set the dev profile -->
+              <run>
+                <env>
+                  <SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
+                </env>
+              </run>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
+
 
     </plugins>
   </build>
