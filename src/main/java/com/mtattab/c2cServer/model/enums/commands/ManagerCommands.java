@@ -21,6 +21,8 @@ public enum ManagerCommands {
 
     REQUEST_INFO_FOR_SESSION("info","Request info for the active session", "info <session-id>",
             "requires the use of a session id."),
+    ALL_SEND_SESSION("all","send message to all clients", "all <command(s)>",
+            "requires that the use command or commands option. EXAMPLE: all /exit"),
 
     ;
 

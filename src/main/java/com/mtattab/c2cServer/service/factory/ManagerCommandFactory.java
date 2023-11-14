@@ -52,6 +52,10 @@ public class ManagerCommandFactory implements CommandFactory {
             case REQUEST_INFO_FOR_SESSION -> {
                 return infoCommand;
             }
+            case ALL_SEND_SESSION -> {
+                return new AllSendCommand();
+            }
+
             default -> throw new CommandNotFoundException();
         }
     }

