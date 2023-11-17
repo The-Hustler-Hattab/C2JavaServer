@@ -11,8 +11,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.mtattab.c2cServer.util.Constants.S3_PATH;
+import static com.mtattab.c2cServer.util.Constants.S3_UPLOAD;
+
 @RestController
-@RequestMapping(path = "/v1/api/s3")
+@RequestMapping(path = S3_PATH)
 @Validated
 public class S3Controller {
 
@@ -20,7 +23,7 @@ public class S3Controller {
     @Autowired
     S3ServiceImpl s3Service;
 
-    @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE} )
+    @PostMapping(value = S3_UPLOAD, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE} )
     public ResponseEntity<RestOutputModel> uploadFile(@RequestPart("file") MultipartFile file
             , @Valid  @RequestParam("sessionId") @SessionExistsValidator String sessionId) {
         RestOutputModel restOutputModel = s3Service.uploadFile(file, sessionId);

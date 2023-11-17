@@ -1,25 +1,59 @@
 package com.mtattab.c2cServer.config;
 
+import filters.CsrfCookieFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static com.mtattab.c2cServer.util.Constants.*;
+
 @Configuration
 
 public class ProjectSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        CsrfTokenRequestAttributeHandler requestAttributeHandler= new CsrfTokenRequestAttributeHandler();
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        requestAttributeHandler.setCsrfRequestAttributeName("_csrf");
 
-        http.authorizeHttpRequests().anyRequest().permitAll()
-                .and().csrf().disable()
+        http
+//                session
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                path permissions
+                .authorizeRequests()
+                .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
+                .requestMatchers("/actuator/health").permitAll()
+                .requestMatchers(S3_PATH+S3_UPLOAD).permitAll()
+                .requestMatchers(WEBSOCKET_REVERSE_SHELL).permitAll()
+                .requestMatchers(WEBSOCKET_REVERSE_SHELL).permitAll()
+//                .requestMatchers("/reverseShellManager").permitAll()
+                .anyRequest()
+                .authenticated()
+//                .permitAll()
+                .and()
 
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+//                csrf
+                .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestAttributeHandler)
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+//              cors
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//              resource server
+                .oauth2ResourceServer(oauth2ResourceServerCustomizer ->
+                oauth2ResourceServerCustomizer.jwt(jwtCustomizer -> jwtCustomizer.jwtAuthenticationConverter(jwtAuthenticationConverter)))
+
+
         ;
 
         return http.build();
