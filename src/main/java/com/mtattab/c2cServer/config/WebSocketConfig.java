@@ -70,9 +70,12 @@ public class WebSocketConfig  implements WebSocketConfigurer {
             @Override
             public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
                                            WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-                String token = request.getURI().getQuery().replace("auth=", "");
-                // You can now access the token and do something with it
-                if (!validateToken(token)){
+
+                String token = getToken(request);
+
+                boolean isTheRequestComingFromMangerSocket =  request.getURI().getPath().toLowerCase().contains(WEBSOCKET_REVERSE_SHELL_MANAGER.toLowerCase());
+                // the request should be authenticated only if it comes from the manager socket
+                if ( isTheRequestComingFromMangerSocket && !validateToken(token) ){
                     response.setStatusCode(HttpStatus.UNAUTHORIZED);
 
                     return false;
@@ -85,6 +88,15 @@ public class WebSocketConfig  implements WebSocketConfigurer {
                                        WebSocketHandler wsHandler, Exception exception) {
             }
         };
+    }
+
+    private String getToken(ServerHttpRequest request){
+        String token = "";
+        if (request.getURI().getQuery()!= null){
+            token = request.getURI().getQuery().replace("auth=", "");
+
+        }
+        return token;
     }
 
 
