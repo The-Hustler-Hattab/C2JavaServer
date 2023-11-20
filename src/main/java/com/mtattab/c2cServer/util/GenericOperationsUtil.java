@@ -1,12 +1,19 @@
 package com.mtattab.c2cServer.util;
 
 import jakarta.persistence.EntityManager;
+import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @UtilityClass
+@Slf4j
 public class GenericOperationsUtil {
 
     public static String getDateTime() {
@@ -26,4 +33,46 @@ public class GenericOperationsUtil {
             entityManager.close();
         }
     }
+
+    public static String sendGetRequest(String url) {
+        HttpURLConnection connection = null;
+        StringBuilder response = new StringBuilder();
+
+        try {
+            // Create a URL object
+            URL obj = new URL(url);
+
+            // Open a connection to the URL
+            connection = (HttpURLConnection) obj.openConnection();
+            // Set the request method to GET
+            connection.setRequestMethod("GET");
+
+            // Get the response code
+            int responseCode = connection.getResponseCode();
+            log.info("Response Code: " + responseCode);
+
+            // Read the response from the input stream
+            @Cleanup
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String inputLine;
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            // Return the response
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }finally {
+            if (connection!=null){
+                connection.disconnect();
+            }
+
+        }
+        return response.toString();
+
+    }
+
 }

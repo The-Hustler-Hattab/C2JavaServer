@@ -13,8 +13,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 import static com.mtattab.c2cServer.util.Constants.*;
 
@@ -36,8 +35,7 @@ public class ProjectSecurityConfig {
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers(S3_PATH+S3_UPLOAD).permitAll()
                 .requestMatchers(WEBSOCKET_REVERSE_SHELL).permitAll()
-                .requestMatchers(WEBSOCKET_REVERSE_SHELL).permitAll()
-//                .requestMatchers("/reverseShellManager").permitAll()
+                .requestMatchers(WEBSOCKET_REVERSE_SHELL_MANAGER).permitAll()
                 .anyRequest()
                 .authenticated()
 //                .permitAll()

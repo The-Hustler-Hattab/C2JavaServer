@@ -8,6 +8,10 @@ public interface Constants {
 
 
     public static final String WEBSOCKET_REVERSE_SHELL = "/reverseShellClients";
+    public static final String WEBSOCKET_REVERSE_SHELL_MANAGER = "/reverseShellManager";
+
+
+    public static final String OKTA_BEAN = "oktaPublicKeys";
 
 
 }
