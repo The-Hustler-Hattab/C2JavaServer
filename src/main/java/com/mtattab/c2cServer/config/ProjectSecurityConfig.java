@@ -31,6 +31,13 @@ public class ProjectSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                path permissions
                 .authorizeRequests()
+
+
+//                .anyRequest().permitAll()
+//                .and()
+//                .csrf()
+//                .disable()
+
                 .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers(S3_PATH+S3_UPLOAD).permitAll()
@@ -43,7 +50,11 @@ public class ProjectSecurityConfig {
 
 //                csrf
                 .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestAttributeHandler)
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers(S3_PATH+S3_UPLOAD)
+                )
+
+
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
 //              cors
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
