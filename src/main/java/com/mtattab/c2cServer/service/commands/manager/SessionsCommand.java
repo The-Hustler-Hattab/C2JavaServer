@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,10 +22,12 @@ public class SessionsCommand implements Command {
 
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
-        List<SocketCommunicationDTOModel> activeReverseShellSessions =  ConnectionManager.activeReverseShellSessions.stream()
-                .map(SocketCommunicationDTOModel::new).collect(Collectors.toList());
+//        List<SocketCommunicationDTOModel> activeReverseShellSessions =  ConnectionManager.activeReverseShellSessions.stream()
+//                .map(SocketCommunicationDTOModel::new).collect(Collectors.toList());
 
-        if (activeReverseShellSessions.isEmpty()){
+
+
+        if (ConnectionManager.activeReverseShellSessionsDTO.isEmpty()){
             SocketUtil.sendMessage(currentSocket, new TextMessage(
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
                             .msg("No session found")
@@ -33,9 +36,13 @@ public class SessionsCommand implements Command {
 
                     )));
         }else {
+            List<SocketCommunicationDTOModel> socketCommunicationDTOModelList = ConnectionManager.activeReverseShellSessionsDTO.stream()
+                    .sorted(Comparator.nullsLast(Comparator.comparing(SocketCommunicationDTOModel::getCreatedAt)))
+                    .toList();
+
             SocketUtil.sendMessage(currentSocket, new TextMessage(
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                            .webSocketSessionSet(activeReverseShellSessions)
+                            .webSocketSessionSet(socketCommunicationDTOModelList)
                             .msg("NOTE: You can use '"+ ManagerCommands.CONNECT_TO_ACTIVE_SESSION.getExample()+"' to connect to the session")
                             .success(true)
                             .build()

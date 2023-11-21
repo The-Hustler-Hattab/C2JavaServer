@@ -1,6 +1,7 @@
 package com.mtattab.c2cServer.util;
 
 import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.SocketCommunicationDTOModel;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class ConnectionManager {
 
     public static Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
 
+    public static Set<SocketCommunicationDTOModel> activeReverseShellSessionsDTO = new HashSet<>();
 
     public static Set<WebSocketSession> activeMangerSessions = new HashSet<>();
 

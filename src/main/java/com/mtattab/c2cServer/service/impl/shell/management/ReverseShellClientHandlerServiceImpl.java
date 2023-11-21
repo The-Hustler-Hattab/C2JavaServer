@@ -32,8 +32,9 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
     public void addActiveSession(WebSocketSession session, TextMessage message){
         if (!ConnectionManager.activeReverseShellSessions.contains(session)){
-            activeSessionsObservable.addReverseShellSession(session);
-            logSessionInDb(session, message);
+            SessionLogEntity sessionLogEntity = logSessionInDb(session, message);
+            activeSessionsObservable.addReverseShellSession(session, sessionLogEntity);
+
         }
     }
 
@@ -43,7 +44,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
     }
 
-    private void logSessionInDb(WebSocketSession session, TextMessage message){
+    private SessionLogEntity logSessionInDb(WebSocketSession session, TextMessage message){
         try {
             ReverseShellInfoInitialMessage initialInfoMessage = DataManipulationUtil.
                     jsonToObject(message.getPayload(), ReverseShellInfoInitialMessage.class);
@@ -63,7 +64,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
                 setUserInfoToTheLog(logEntity, initialInfoMessage);
             }
 
-            sessionLogRepository.save(logEntity);
+            return sessionLogRepository.save(logEntity);
 
 
 
@@ -72,6 +73,8 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
             log.error("[-] exception occurred while saving session: {}",e.getMessage());
             e.printStackTrace();
         }
+        return null;
+
     }
     private void setUserInfoToTheLog(SessionLogEntity logEntity, ReverseShellInfoInitialMessage initialInfoMessage){
         logEntity.setOsName(initialInfoMessage.getOsName());
