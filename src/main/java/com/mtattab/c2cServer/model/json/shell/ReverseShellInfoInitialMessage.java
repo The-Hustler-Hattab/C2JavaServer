@@ -1,4 +1,4 @@
-package com.mtattab.c2cServer.model.json;
+package com.mtattab.c2cServer.model.json.shell;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;

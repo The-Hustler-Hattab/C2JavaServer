@@ -59,7 +59,8 @@ public class DataManipulationUtil {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(json, valueType);
         } catch (JsonProcessingException e) {
-            e.printStackTrace(); // Handle the exception appropriately
+//            e.printStackTrace(); // Handle the exception appropriately
+            log.error("json {} was not converted to {}",json,valueType);
             return null;
         }
     }

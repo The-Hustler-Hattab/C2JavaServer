@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.service.commands.connected;
 
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;

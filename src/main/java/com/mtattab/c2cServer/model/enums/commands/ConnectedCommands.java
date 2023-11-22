@@ -9,6 +9,8 @@ public enum ConnectedCommands {
 
     HELP_CONNECTED("/?", "show all commands", "/?",
             "There is no required parameters"),
+    HELP_CONNECTED_AGENT("/??", "show all agent commands", "/??",
+            "There is no required parameters"),
 
     DISCONNECT_KILL_CURRENT_CONNECTION("/kill-me","kills current session", "/kill-me",
             "There is no required parameters"),

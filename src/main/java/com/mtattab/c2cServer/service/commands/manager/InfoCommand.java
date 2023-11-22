@@ -1,8 +1,7 @@
 package com.mtattab.c2cServer.service.commands.manager;
 
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
-import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
 import com.mtattab.c2cServer.service.Command;
 import com.mtattab.c2cServer.util.DataManipulationUtil;

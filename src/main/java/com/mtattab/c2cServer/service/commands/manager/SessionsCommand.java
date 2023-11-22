@@ -1,21 +1,17 @@
 package com.mtattab.c2cServer.service.commands.manager;
 
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.json.SocketCommunicationDTOModel;
 import com.mtattab.c2cServer.model.enums.commands.ManagerCommands;
 import com.mtattab.c2cServer.service.Command;
-import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SessionsCommand implements Command {
 

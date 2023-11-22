@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.util;
 
-import com.mtattab.c2cServer.model.json.ManagerCommunicationModel;
+import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.model.json.SocketCommunicationDTOModel;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
