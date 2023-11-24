@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class ConnectedCommandFactory implements CommandFactory {
     @Override
-    public Command createCommand(String userInput) throws CommandNotFoundException {
+    public Command createCommand(String userInput) {
         List<String> userInputAsList= DataManipulationUtil.stringToList(userInput, " ");
         Optional<ConnectedCommands> command = Arrays.stream(ConnectedCommands.values())
                 .filter(cmd -> Objects.requireNonNull(userInputAsList.get(0))

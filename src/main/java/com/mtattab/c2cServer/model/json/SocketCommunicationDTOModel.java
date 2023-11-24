@@ -36,7 +36,7 @@ public class SocketCommunicationDTOModel {
         if (logEntity== null )return;
 
         this.socketAddress= Objects.requireNonNull(logEntity.getPublicIp());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd : HH mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd : HH:mm:ss");
 
         this.createdAt= Objects.requireNonNull(logEntity.getSessionCreatedAt().toLocalDateTime().format(formatter));
 

@@ -7,37 +7,16 @@ phases:
   pre_build:
     commands:
       - echo Starting build `date`
-#      - docker login -u $dockerhub_username -p $dockerhub_password
-#      - REPOSITORY_URI=$ecr_uri
-#      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-#      - IMAGE_TAG=${COMMIT_HASH:=latest}
   build:
     commands:
       - echo Build started on `date`
-#      - aws s3 cp s3://aws-keys-for-ec2/keystore.p12 ./src/main/resources/
       - mvn install
-#    commands:
-#      - echo Build started on `date`
-#      - echo Building the Docker image...
-#      - docker build -t $REPOSITORY_URI:latest .
-#      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+
   post_build:
     commands:
       - echo Build completed on `date`
-#  post_build:
-#    commands:
-#      - echo Build completed on `date`
-#      - echo Logging in to Amazon ECR...
-#      - aws --version
-#      - aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
-#      - echo Pushing the Docker images...
-#      - docker push $REPOSITORY_URI:latest
-#      - docker push $REPOSITORY_URI:$IMAGE_TAG
-#      - echo Writing image definitions file...
-#      - printf '[{"name":"'$ecs_container_name'","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+
 artifacts:
   files:
     - ./target/*.jar
   discard-paths: yes
-#artifacts:
-#  files: imagedefinitions.json

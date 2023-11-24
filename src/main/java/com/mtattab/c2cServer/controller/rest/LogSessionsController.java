@@ -2,6 +2,7 @@ package com.mtattab.c2cServer.controller.rest;
 
 import com.mtattab.c2cServer.model.json.RestOutputModel;
 import com.mtattab.c2cServer.service.LogSessionService;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -33,7 +34,7 @@ public class LogSessionsController {
     }
 
     @GetMapping(value = "/getLogsBetween2Dates" )
-    public ResponseEntity<RestOutputModel> getLogsBetween2Dates(@RequestParam("start") String start,
+    public ResponseEntity<RestOutputModel> getLogsBetween2Dates(@Parameter(name = "start", description = "date in 'MM/dd/yyyy' format", example = "10/24/2023") @RequestParam("start") String start,
                                                                 @RequestParam("finish") String finish) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Timestamp startDate = new java.sql.Timestamp(dateFormat.parse(start).getTime());
