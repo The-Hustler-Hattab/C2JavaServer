@@ -22,7 +22,7 @@ This Java Spring Boot project serves as a Command and Control server designed to
 
 Before you begin, ensure you have the following prerequisites:
 
-- Java Development Kit (JDK) installed
+- Java Development Kit 17 (JDK) installed
 - Maven installed
 
 
