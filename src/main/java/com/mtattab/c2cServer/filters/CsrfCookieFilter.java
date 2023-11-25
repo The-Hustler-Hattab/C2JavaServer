@@ -1,4 +1,4 @@
-package filters;
+package com.mtattab.c2cServer.filters;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

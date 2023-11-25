@@ -19,9 +19,10 @@ import java.util.Set;
 public class ConnectionManager {
 
 
-    public static Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
 
     public static Set<SocketCommunicationDTOModel> activeReverseShellSessionsDTO = new HashSet<>();
+
+    public static Set<WebSocketSession> activeReverseShellSessions = new HashSet<>();
 
     public static Set<WebSocketSession> activeMangerSessions = new HashSet<>();
 
@@ -30,10 +31,16 @@ public class ConnectionManager {
 
     public static HashMap<WebSocketSession, WebSocketSession > connectedReverseToManagerSessions= new HashMap<>();
 
+// The key is message uuid and the value is the manager session
+    public static HashMap<String, WebSocketSession > rerouteAllCommandToMangerSession = new HashMap<>();
+
+
     public static void disconnectConnection(WebSocketSession session){
         log.info("[+] Disconnecting session {} if it has any active connections to other sockets ",session);
         DataManipulationUtil.removeByValue(connectedReverseToManagerSessions, session);
         DataManipulationUtil.removeByValue(connectedManagerToReverseSessions, session);
+        DataManipulationUtil.removeByValue(rerouteAllCommandToMangerSession, session);
+
     }
 
     public static WebSocketSession getBySessionId(String sessionId, HashMap<WebSocketSession, WebSocketSession > sessions){

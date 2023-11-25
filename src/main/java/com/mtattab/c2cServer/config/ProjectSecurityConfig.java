@@ -1,6 +1,6 @@
 package com.mtattab.c2cServer.config;
 
-import filters.CsrfCookieFilter;
+import com.mtattab.c2cServer.filters.CsrfCookieFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
