@@ -24,29 +24,44 @@ public class InfoCommand implements Command {
 
     @Override
     public void execute(List<String> args, WebSocketSession currentSocket) {
-        String sessionId = args.get(1);
+        try {
+            String sessionId = args.get(1);
 
-        Optional<SessionLogEntity>  sessionInfo = sessionLogRepository.findBySessionId(sessionId);
+            Optional<SessionLogEntity>  sessionInfo = sessionLogRepository.findBySessionId(sessionId);
 
-        if (sessionInfo.isPresent()){
-            sessionInfo.get().setSessionFiles(null);
-            sessionInfo.get().setSessionRemoteAddress(null);
-            sessionInfo.get().setSessionLocalAddress(null);
+            if (sessionInfo.isPresent()){
+                sessionInfo.get().setSessionFiles(null);
+                sessionInfo.get().setSessionRemoteAddress(null);
+                sessionInfo.get().setSessionLocalAddress(null);
 
 
-            SocketUtil.sendMessage(currentSocket, new TextMessage(
+                SocketUtil.sendMessage(currentSocket, new TextMessage(
 
-                    DataManipulationUtil.convertObjectToJson(
-                            sessionInfo.get()
-                    )));
+                        DataManipulationUtil.convertObjectToJson(
+                                sessionInfo.get()
+                        )));
 
-        }else {
+            }else {
+                SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                        .msg(String.format("session '%s' not found ", sessionId))
+                        .success(false)
+                        .build()
+                )));
+            }
+        }catch (IndexOutOfBoundsException e){
             SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
-                    .msg(String.format("session '%s' not found ", sessionId))
+                    .msg(String.format("Must provide an active session"))
+                    .success(false)
+                    .build()
+            )));
+        }catch (Exception e){
+            SocketUtil.sendMessage(currentSocket, new TextMessage(DataManipulationUtil.convertObjectToJson(ManagerCommunicationModel.builder()
+                    .msg(String.format("error occurred with command '%s'. ERROR: '%s'", args,e.getMessage()))
                     .success(false)
                     .build()
             )));
         }
+
 
 
     }
