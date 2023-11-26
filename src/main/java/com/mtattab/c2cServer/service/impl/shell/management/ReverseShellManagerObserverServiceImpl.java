@@ -69,6 +69,10 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     }
 
     public void handleManagerSession(WebSocketSession session, TextMessage message) {
+        log.debug(message.getPayload());
+        if (SocketUtil.keepAliveHandle(message)){
+            return;
+        }
         log.debug("[+] Current active sessions are {}",ConnectionManager.connectedManagerToReverseSessions);
         if (ConnectionManager.connectedManagerToReverseSessions.get(session)!=null){
             CommandFactory connectedCommandFactory = new ConnectedCommandFactory();
@@ -89,6 +93,7 @@ public class ReverseShellManagerObserverServiceImpl implements  ApplicationListe
     private boolean handleManagerCommandMessage(WebSocketSession session, TextMessage message, CommandFactory commandFactory) {
         String mangerMessage = message.getPayload();
         log.debug("Manager input is: {}",mangerMessage);
+
         List<String> userInputAsList= DataManipulationUtil.stringToList(mangerMessage, " ");
 
         try {

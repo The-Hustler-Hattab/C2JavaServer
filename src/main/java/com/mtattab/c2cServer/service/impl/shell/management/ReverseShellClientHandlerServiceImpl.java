@@ -125,8 +125,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
     public void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException {
         String clientMessage = message.getPayload();
-        if (clientMessage.equalsIgnoreCase("KEEP_ALIVE")){
-            System.out.println(clientMessage);
+        if (SocketUtil.keepAliveHandle(message)){
             return;
         }
         //        ManagerCommunicationModel managerCommunicationModel= DataManipulationUtil.jsonToObject(clientMessage, ManagerCommunicationModel.class);

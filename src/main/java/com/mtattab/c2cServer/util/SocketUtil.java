@@ -21,6 +21,10 @@ public class SocketUtil {
             throw new RuntimeException(e);
         }
     }
+    public static boolean keepAliveHandle(TextMessage message){
+        String clientMessage = message.getPayload();
+        return clientMessage.equalsIgnoreCase("KEEP_ALIVE");
+    }
 
     public Optional<WebSocketSession> findSessionByIdInSessionSet(Set<WebSocketSession> sessionSet , String sessionId){
         return sessionSet.stream()
