@@ -72,6 +72,9 @@ public class SessionLogEntity {
     @Column(name = "PUBLIC_IP", nullable = true)
     private String publicIp;
 
+    @Column(name = "MALWARE_TYPE", nullable = true)
+    private String malwareType;
+
     @Column(name = "HAS_Files", nullable = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String hasFiles;

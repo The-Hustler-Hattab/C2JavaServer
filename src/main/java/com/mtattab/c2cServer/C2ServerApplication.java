@@ -6,14 +6,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+
+
 @SpringBootApplication
 @OpenAPIDefinition
 @EnableWebMvc
 @ComponentScan
-public class C2cServerApplication {
+public class C2ServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(C2cServerApplication.class, args);
+		SpringApplication.run(C2ServerApplication.class, args);
 	}
 
 }

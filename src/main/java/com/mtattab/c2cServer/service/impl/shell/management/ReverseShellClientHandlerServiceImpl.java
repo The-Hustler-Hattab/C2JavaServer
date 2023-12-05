@@ -87,6 +87,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
         logEntity.setUserCurrentWorkingDir(initialInfoMessage.getUserCurrentWorkingDir());
         logEntity.setUserLanguage(initialInfoMessage.getUserLanguage());
         logEntity.setPublicIp(initialInfoMessage.getUserPublicIp());
+        logEntity.setMalwareType(initialInfoMessage.getMalwareType());
     }
 
 
