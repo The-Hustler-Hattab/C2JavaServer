@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 public class ConnectionManager {
 
-
+    public static int totalPawnedSessions = 0;
 
     public static Set<SocketCommunicationDTOModel> activeReverseShellSessionsDTO = new HashSet<>();
 

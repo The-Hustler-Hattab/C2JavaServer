@@ -23,6 +23,14 @@ public class ConnectCommand implements Command {
     public void execute(List<String> args, WebSocketSession currentSocket) {
         Optional<WebSocketSession> targetSessionToBeConnectedTo = SocketUtil.findSessionByIdInSessionSet(
                 ConnectionManager.activeReverseShellSessions,args.get(1));
+// retry with session number
+
+
+        if (targetSessionToBeConnectedTo.isEmpty()){
+            targetSessionToBeConnectedTo = SocketUtil.findSessionBySessionNumber(ConnectionManager.activeReverseShellSessionsDTO,
+                    DataManipulationUtil.parseStringToInteger(args.get(1)));
+
+        }
 
         if (targetSessionToBeConnectedTo.isPresent()){
             connectToSession(currentSocket, targetSessionToBeConnectedTo.get(), args);

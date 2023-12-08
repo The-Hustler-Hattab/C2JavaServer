@@ -2,6 +2,7 @@ package com.mtattab.c2cServer.model.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mtattab.c2cServer.model.entity.SessionLogEntity;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
@@ -13,8 +14,13 @@ import java.util.Objects;
 @Data
 @SuperBuilder
 public class SocketCommunicationDTOModel {
+
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String socketId;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer sessionNumber;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String socketAddress;
@@ -40,7 +46,8 @@ public class SocketCommunicationDTOModel {
 
         this.createdAt= Objects.requireNonNull(logEntity.getSessionCreatedAt().toLocalDateTime().format(formatter));
 
-
+        ConnectionManager.totalPawnedSessions = ConnectionManager.totalPawnedSessions+1;
+        this.sessionNumber = ConnectionManager.totalPawnedSessions;
 
     }
 

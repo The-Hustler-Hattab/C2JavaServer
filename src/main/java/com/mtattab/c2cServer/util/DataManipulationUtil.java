@@ -65,10 +65,23 @@ public class DataManipulationUtil {
         }
     }
 
+    public static Integer parseStringToInteger(String str){
+        try {
+            // Attempt to convert the String to an int
+            return Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            // Handle the case where the String is not a valid integer
+            System.out.println("Invalid integer format");
+            return -100;
+        }
+
+
+    }
+
     public File convertMultiPartToFile(MultipartFile file) throws IOException {
         String tempDir = System.getProperty("java.io.tmpdir");
 //        System.out.println(tempDir);
-        File convFile = new File(tempDir ,Objects.requireNonNull(file.getOriginalFilename()));
+        File convFile = new File(tempDir , Objects.requireNonNull(file.getOriginalFilename()));
 
         @Cleanup
         FileOutputStream fos = new FileOutputStream(convFile);

@@ -21,6 +21,11 @@ public class TerminateCommand implements Command {
             Optional<WebSocketSession> targetSessionToBeKilled = SocketUtil.findSessionByIdInSessionSet(
                     ConnectionManager.activeReverseShellSessions ,args.get(1));
 
+            if (targetSessionToBeKilled.isEmpty()){
+                targetSessionToBeKilled = SocketUtil.findSessionBySessionNumber(ConnectionManager.activeReverseShellSessionsDTO,
+                        DataManipulationUtil.parseStringToInteger(args.get(1)));
+
+            }
 
             if (targetSessionToBeKilled.isPresent()){
                 SocketUtil.closeSession(targetSessionToBeKilled.get(), currentSocket);

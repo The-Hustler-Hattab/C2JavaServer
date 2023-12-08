@@ -4,6 +4,7 @@ import com.mtattab.c2cServer.model.entity.SessionLogEntity;
 import com.mtattab.c2cServer.model.json.shell.ManagerCommunicationModel;
 import com.mtattab.c2cServer.repository.SessionLogRepository;
 import com.mtattab.c2cServer.service.Command;
+import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,19 @@ public class InfoCommand implements Command {
             String sessionId = args.get(1);
 
             Optional<SessionLogEntity>  sessionInfo = sessionLogRepository.findBySessionId(sessionId);
+
+
+            if (sessionInfo.isEmpty()){
+
+                Optional<WebSocketSession> webSocketSession = SocketUtil.findSessionBySessionNumber(ConnectionManager.activeReverseShellSessionsDTO,
+                        DataManipulationUtil.parseStringToInteger(args.get(1)));
+
+                if (webSocketSession.isPresent()){
+                    sessionInfo = sessionLogRepository.findBySessionId(webSocketSession.get().getId());
+                }
+
+            }
+
 
             if (sessionInfo.isPresent()){
                 sessionInfo.get().setSessionFiles(null);
