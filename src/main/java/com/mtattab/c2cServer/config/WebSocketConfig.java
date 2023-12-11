@@ -101,34 +101,40 @@ public class WebSocketConfig  implements WebSocketConfigurer {
 
 
 // this will check if the token is valid from okta server
-    public boolean validateToken(String token) {
-        try {
-            // Parse the JSON representation of public keys
-            JWKSet jwkSet = JWKSet.parse(this.oktaPublicKeys);
+public boolean validateToken(String token) {
+    try {
+        // Parse the JSON representation of public keys
+        JWKSet jwkSet = JWKSet.parse(this.oktaPublicKeys);
 
-            // Obtain the public key that corresponds to the private key used to sign the JWT
-            List<JWK> keys = jwkSet.getKeys();
+        // Obtain the public keys from the set
+        List<JWK> keys = jwkSet.getKeys();
 
-            // Choose the correct key based on your application's logic
-            JWK chosenKey = keys.get(0); // Replace this with your actual logic to choose the key
+        // Iterate through each key and try to validate the token
+        for (JWK chosenKey : keys) {
+            try {
+                // Convert the JWK to an actual public key
+                RSAPublicKey publicKey = chosenKey.toRSAKey().toRSAPublicKey();
 
-            // Convert the JWK to an actual public key
-            RSAPublicKey publicKey = chosenKey.toRSAKey().toRSAPublicKey();
-
-            // Perform JWT verification using the chosen public key
-            SignedJWT signedJWT = SignedJWT.parse(token);
-            if (signedJWT.verify(new RSASSAVerifier(publicKey))) {
-                // Token is valid
-                return true;
-            } else {
-                // Token signature verification failed
-                return false;
+                // Perform JWT verification using the chosen public key
+                SignedJWT signedJWT = SignedJWT.parse(token);
+                if (signedJWT.verify(new RSASSAVerifier(publicKey))) {
+                    // Token is valid
+                    return true;
+                }
+            } catch (Exception e) {
+                // Log and continue to the next key in case of any exception
+                System.out.println("Error validating token with key: " + chosenKey.getKeyID());
             }
-        } catch (Exception e) {
-            // Token parsing or verification failed
-            e.printStackTrace();
-            return false;
         }
+
+        // Token validation failed with all keys
+        return false;
+    } catch (Exception e) {
+        // Token parsing or verification failed
+        System.out.println("Error parsing or verifying token.");
+        return false;
+        }
+
     }
 }
 
