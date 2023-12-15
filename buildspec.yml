@@ -21,4 +21,5 @@ artifacts:
   files:
     - ./*.jar
     - .ebextensions/**
+    - .platform/**
 #  discard-paths: yes
