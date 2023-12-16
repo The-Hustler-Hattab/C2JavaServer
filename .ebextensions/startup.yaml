@@ -1,3 +1,0 @@
-commands:
-  startup:
-    command: "sed -i '/server {/a \    client_max_body_size 999M;' /etc/nginx/nginx.conf;nginx -s reload;echo '[+] nginx change complete';mv -f .ebextensions/nginx/nginx.conf /tmp/deployment/config/#etc#nginx#conf.d#00_elastic_beanstalk_proxy.conf"
