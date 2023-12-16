@@ -20,6 +20,6 @@ phases:
 artifacts:
   files:
     - ./*.jar
-    - .ebextensions/**/*
-#    - .platform/**/*
+#    - .ebextensions/**/*
+    - .platform/**/*
 #  discard-paths: yes
