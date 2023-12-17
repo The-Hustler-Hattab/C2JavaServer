@@ -23,7 +23,7 @@ public class ReverseShellClientsHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        reverseShellClientHandlerService.sendIntialMessage(session);
+        /*reverseShellClientHandlerService.sendIntialMessage(session);*/
 
     }
     @Override

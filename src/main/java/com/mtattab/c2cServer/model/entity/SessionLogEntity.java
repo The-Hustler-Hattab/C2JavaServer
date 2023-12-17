@@ -75,6 +75,9 @@ public class SessionLogEntity {
     @Column(name = "MALWARE_TYPE", nullable = true)
     private String malwareType;
 
+    @Column(name = "AES_256_HEX_KEY", nullable = true)
+    private String aes256HexKey;
+
     @Column(name = "HAS_Files", nullable = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String hasFiles;

