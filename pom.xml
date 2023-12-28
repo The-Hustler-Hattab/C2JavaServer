@@ -15,7 +15,8 @@
   <description>Command and control server for receiving connections from target computers</description>
   <properties>
     <java.version>17</java.version>
-  </properties>
+  <versions.java-security-toolkit>1.1.1</versions.java-security-toolkit>
+ </properties>
   <dependencies>
 
     <dependency>
@@ -118,8 +119,11 @@
       <artifactId>aws-java-sdk-s3</artifactId>
       <version>1.12.13</version> <!-- Use the latest version available -->
     </dependency>
-
-  </dependencies>
+  <dependency>
+   <groupId>io.github.pixee</groupId>
+   <artifactId>java-security-toolkit</artifactId>
+  </dependency>
+ </dependencies>
 
   <build>
     <plugins>
@@ -182,5 +186,13 @@
 
     </plugins>
   </build>
-
+ <dependencyManagement>
+  <dependencies>
+   <dependency>
+    <groupId>io.github.pixee</groupId>
+    <artifactId>java-security-toolkit</artifactId>
+    <version>${versions.java-security-toolkit}</version>
+   </dependency>
+  </dependencies>
+ </dependencyManagement>
 </project>

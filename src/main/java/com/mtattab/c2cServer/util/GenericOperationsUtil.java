@@ -1,5 +1,6 @@
 package com.mtattab.c2cServer.util;
 
+import io.github.pixee.security.BoundedLineReader;
 import jakarta.persistence.EntityManager;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
@@ -57,7 +58,7 @@ public class GenericOperationsUtil {
 
             String inputLine;
 
-            while ((inputLine = in.readLine()) != null) {
+            while ((inputLine = BoundedLineReader.readLine(in, 5_000_000)) != null) {
                 response.append(inputLine);
             }
 
