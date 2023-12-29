@@ -77,5 +77,9 @@ WebSocket agents can connect to the server using the /reverseshell endpoint.
 
 [C2 UI](https://github.com/The-Hustler-Hattab/c2-ui)  
 [C2 Server](https://github.com/The-Hustler-Hattab/C2JavaServer)   
-[C2 Agent](https://github.com/The-Hustler-Hattab/ReverseShellWebSocketAgent)
+[C2 Java Agent](https://github.com/The-Hustler-Hattab/ReverseShellWebSocketAgent)  
+[C2 C# .NET Agent (RECOMMENDED)](https://github.com/The-Hustler-Hattab/WebSocketReverseShellDotNet)  
 
+## Contributing
+Contributions are welcome!
+Please make a pull request for new features
