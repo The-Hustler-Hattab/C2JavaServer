@@ -15,6 +15,7 @@ This Java Spring Boot project serves as a Command and Control server designed to
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Managing WebSocket Agents](#managing-websocket-agents)
+- [Database ERD Diagram](#Database-ERD-Diagram)
 - [C2 Components](#C2-Components)
 
 
@@ -71,6 +72,10 @@ spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${OKTA_JWK_URI}
 ## Managing WebSocket Agents
 
 WebSocket agents can connect to the server using the /reverseshell endpoint. 
+
+## Database-ERD-Diagram
+![Screenshot 1](./readme/erd-c2.png)
+*DB ERD Diagram*
 
 
 ## C2-Components
