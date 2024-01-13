@@ -18,6 +18,8 @@ This Java Spring Boot project serves as a Command and Control server designed to
 - [Database ERD Diagram](#Database-ERD-Diagram)
 - [C2 Components](#C2-Components)
 
+## Youtube Demo
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/EsMQl13e8bs/0.jpg)](https://www.youtube.com/watch?v=EsMQl13e8bs&ab_channel=MohammedHattab)  
 
 ## Prerequisites
 
@@ -84,6 +86,7 @@ WebSocket agents can connect to the server using the /reverseshell endpoint.
 [C2 Server](https://github.com/The-Hustler-Hattab/C2JavaServer)   
 [C2 Java Agent](https://github.com/The-Hustler-Hattab/ReverseShellWebSocketAgent)  
 [C2 C# .NET Agent (RECOMMENDED)](https://github.com/The-Hustler-Hattab/WebSocketReverseShellDotNet)  
+[Malware Distribution Phishing Page](https://github.com/The-Hustler-Hattab/obs-project-phishing)  
 
 ## Contributing
 Contributions are welcome!
