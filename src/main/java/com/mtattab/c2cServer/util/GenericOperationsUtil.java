@@ -1,5 +1,7 @@
 package com.mtattab.c2cServer.util;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import jakarta.persistence.EntityManager;
 import lombok.Cleanup;
 import lombok.experimental.UtilityClass;
@@ -40,7 +42,7 @@ public class GenericOperationsUtil {
 
         try {
             // Create a URL object
-            URL obj = new URL(url);
+            URL obj = Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
 
             // Open a connection to the URL
             connection = (HttpURLConnection) obj.openConnection();
