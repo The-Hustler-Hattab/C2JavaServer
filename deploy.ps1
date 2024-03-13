@@ -15,4 +15,5 @@ gcloud run deploy c2-server `
   --allow-unauthenticated `
   --cpu 1 `
   --memory 2Gi `
-  --port=8070
+  --port=8070 `
+  --project=personal-projects-416300
